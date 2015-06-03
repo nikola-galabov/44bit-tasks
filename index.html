@@ -1,0 +1,172 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Responsive buttons</title>        
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+        <link rel="author" href="humans.txt">
+
+        <style>
+
+            .buttons-container * {
+                display: inline;
+            }
+            
+            .dropup ul {
+                display: none;
+            }
+
+            .dropup-button, .dropup-button * {
+                background-color: transparent;
+                border: none;
+                color: black;
+                display: block;
+                width: 100%;
+                margin: 0 auto;
+                text-align: center;
+            }
+
+            .dropup-button:hover, .dropup-button *:hover {
+                color: black;
+                background-color: rgb(245,245,245);
+            }
+        </style>
+    </head>
+    <body>
+
+        <div>
+            Some content
+        </div>
+
+        <div class="navbar-fixed-bottom">
+
+            <div class="buttons-container">
+                <button class="btn btn-lg btn-primary">First</button>
+                <a class="btn btn-lg btn-primary">A</a>
+                <div><a class="btn btn-lg btn-primary">A inside div</a></div>
+                <div><div><a class="btn btn-lg btn-primary">A inside 2 divs</a></div></div>
+                <div><button class="btn btn-lg btn-primary">Button Inside div</button></div>
+                <div><div><button class="btn btn-lg btn-primary">button inside 2 divs</button></div></div>
+                
+            </div>
+        </div>
+
+        <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+        <script>
+
+            var buttonsContainerSelector = '.buttons-container';
+            var dropupBtnText = 'Show actions';
+
+            var $buttonsContainer = $(buttonsContainerSelector);
+            var buttons = $buttonsContainer.children();
+            var isDropup = false;
+            var windowMinWidth = 4 * buttons.length;
+
+            for(var index = 0; index <= buttons.length-1; index++) {
+
+                var currentButtonWidth = $(buttons[index]).outerWidth(true);
+                windowMinWidth += currentButtonWidth;
+            }
+
+
+            $(document).ready(function() {
+
+                var windowCurrentWidth = $(document).width();
+
+                if (windowCurrentWidth <= windowMinWidth && isDropup == false) { 
+                    
+                    renderButtonsInDropup();
+                }
+            });
+
+            $(window).resize(function() {
+
+                var windowCurrentWidth = $(document).width();
+
+                if (windowCurrentWidth <= windowMinWidth && isDropup == false) { 
+                    
+                    renderButtonsInDropup();
+                }
+
+                if (windowCurrentWidth > windowMinWidth && isDropup == true) {
+
+                    renderButtonsWithoutDropup();
+                }
+            });
+
+            function renderButtonsInDropup() {
+
+                var $ul = $('<ul class="dropdown-menu" aria-labeldby="dropdownMenu">');
+                var $dropDownButton = $('<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-expanded="true">');
+                $dropDownButton.text(dropupBtnText);
+
+                $buttonsContainer.addClass('dropup');
+                $buttonsContainer.empty();
+                $buttonsContainer.append($dropDownButton);
+                $buttonsContainer.append($ul);
+
+                for (var index = 0; index <= buttons.length-1; index++) {
+                    
+                    var $li = $('<li role="presentation">');
+                    var button = $(buttons[index]);
+                    button.attr('role', 'menu-item');
+                    button.addClass('dropup-button');
+
+                    $li.append(button);
+                    $li.appendTo($ul);
+                };
+
+                isDropup = true;
+            }
+
+            function renderButtonsWithoutDropup() {
+
+                $buttonsContainer.removeClass('dropup');
+                $buttonsContainer.empty();
+
+                for (var index = 0; index <= buttons.length-1; index++) {
+
+                    var button = $(buttons[index]);
+                    button.css('margin-right', '3.5px');
+                    button.removeClass('dropup-button');
+                    $buttonsContainer.append(button);
+                };
+
+                isDropup = false;
+            }
+
+        </script>
+        
+    </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
