@@ -100,9 +100,8 @@
             function renderButtonsInDropup() {
 
                 var $ul = $('<ul class="dropdown-menu" aria-labeldby="dropdownMenu">');
-                var $dropDownButton = $('<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-expanded="true">');
-                $dropDownButton.text(dropupBtnText);
-
+                var $dropDownButton = $('<button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-expanded="true">');
+                $dropDownButton.html('<span>' + dropupBtnText + ' </span><span class="caret"></span>');
                 $buttonsContainer.addClass('dropup');
                 $buttonsContainer.empty();
                 $buttonsContainer.append($dropDownButton);
