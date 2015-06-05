@@ -4,4 +4,9 @@ component {
 		Sleep(3000);
 		return 'ok';
 	}
+
+	remote numeric function getValue() returnformat="JSON"{
+		Sleep(3000);
+		return 1;
+	}
 }

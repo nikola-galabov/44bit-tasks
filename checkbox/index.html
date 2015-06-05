@@ -3,7 +3,17 @@
     <head>
         <meta charset="utf-8">    
         <title>Checkbox</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+        <!-- Basic Styles -->
+        <link rel="stylesheet" type="text/css" media="screen" href="css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="css/font-awesome.min.css">
+
+        <!-- SmartAdmin Styles : Caution! DO NOT change the order -->
+        <link rel="stylesheet" type="text/css" media="screen" href="css/smartadmin-production-plugins.min.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="css/smartadmin-production.min.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="css/smartadmin-skins.min.css">
+
+        <!-- SmartAdmin RTL Support  -->
+        <link rel="stylesheet" type="text/css" media="screen" href="css/smartadmin-rtl.min.css">
         <style>
             .result {
                 display: none;
@@ -16,37 +26,21 @@
             .result-error {
                 color: red;
             }
+
+            .loading-image {
+                width: 20px;
+            }
         </style>
     </head>
     <body>
     	<label for="isActive">Active: </label>
-        <input id="isActive" type="checkbox" name="isActive" data-name="isActive" data-pk="1" data-value="0" data-confirmation="true">
+        <input id="isActive" type="checkbox" name="isActive" data-name="isActive" data-pk="1" data-value="1">
         <div class="result"></div>
-
-       <!--  <div id="MsgBoxBack" class="divMessageBox animated fadeIn fast">
-            <div id="Msg1" class="MessageBoxContainer animated fadeIn fast">
-                <div class="MessageBoxMiddle">
-                    <span class="MsgTitle">
-                        <i class="fa fa-sign-out txt-color-orangeDark"></i> 
-                        Logout 
-                        <span class="txt-color-orangeDark">
-                            <strong> john.doe </strong>
-                        </span> 
-                        ?
-                    </span>
-
-                    <p class="pText">You can improve your security further after logging out by closing this opened browser</p>
-                    <div class="MessageBoxButtonSection">
-                        <button class="btn btn-default btn-sm botTempo" id="bot1-Msg1"> No</button>
-                        <button class="btn btn-default btn-sm botTempo" id="bot2-Msg1"> Yes</button>
-                    </div>
-                </div>
-            </div>
-        </div> -->
         
         <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-        <script src="/checkbox/libs/bootbox.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>        
+        <script src="/checkBox/libs/SmartNotification.min.js"></script>
+        
         <script>
             var selector = '#isActive';
             var $checkBox = $(selector);
@@ -54,33 +48,44 @@
             var pk = $checkBox.attr('data-pk');
             var url = '/Checkbox/serverside.cfc?method=test';
             var confirmation = $checkBox.attr('data-confirmation');
+            var checkBoxIsChecked = false;
+            var $loadingImage = $('<img class="loading-image" src="/checkbox/loading.gif" alt="loading"/>');
             var value = $checkBox.attr('data-value');
             var errorMessage = 'Something went wrong';
             var successMessage = 'Your change was successfully made!';
-
-            $checkBox.click(main);
-
-            function main() {
-                $loadingImage = $('<img src="/checkbox/loading.gif" alt="loading"/>');
-                $checkBox.replaceWith($loadingImage);
-
-                var data = {
+            var data = {
                     'name': name,
                     'pk': pk,
                     'value': value,
                 };
-
-                if(confirmation) {
-                    makeConfirmation();
-
-                    //Todo: confirm or die
-                }
-
-                makeRequest(url, data);
+            
+            if (value == 1) {
+                checkBoxIsChecked = true;
             }
 
-            function makeConfirmation() {
-                var $confirmationBG = $('<div class="confirmation-background">');
+            $checkBox.prop('checked', checkBoxIsChecked);
+            $checkBox.click(checkboxClickHandler);
+            
+            function checkboxOnClickHandler() {
+                $checkBox.prop('checked', checkBoxIsChecked);
+
+                if(confirmation) {              
+                    $.SmartMessageBox({
+                        title : "<h1>Are you sure you want to make this change?</h1>",
+                        content : "",
+                        buttons : '[No][Yes]'
+            
+                    }, function(ButtonPressed) {
+                        if (ButtonPressed == "Yes") {
+                            $checkBox.replaceWith($loadingImage);
+                            makeRequest(url, data);
+                        }
+                    });
+                } else {
+                    $checkBox.replaceWith($loadingImage);
+                    makeRequest(url, data);
+                }
+
             }
 
             function makeRequest(url, data) {
@@ -90,15 +95,17 @@
                     data: data,
                 })
                 .done(function(data){
-
                     $loadingImage.replaceWith($checkBox);
-                    $checkBox.click(main);
+                    $checkBox.click(checkboxClickHandler);
+                    checkBoxIsChecked = !checkBoxIsChecked;
+                    $checkBox.prop('checked', checkBoxIsChecked);
                     addMessage('success', successMessage);
                 })
                 .fail(function(err) {
+                    $checkBox.prop('checked', checkBoxIsChecked);
                     $loadingImage.replaceWith($checkBox);
                     addMessage('error', errorMessage);
-                    $checkBox.click(main);
+                    $checkBox.click(checkboxClickHandler);
                     
                 });
             }
@@ -108,9 +115,11 @@
                 $('.result').html('<span class="result-' + type + '">' + text + '</span>');
                 $('.result').css('display', 'block');
 
-                setTimeout(function() {
-                    $('.result').hide();
-                }, duration);
+                if(type == 'success') {
+                    setTimeout(function() {
+                        $('.result').hide();
+                    }, duration);
+                }
             }
             
         </script>
