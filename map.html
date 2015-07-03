@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        #map_canvas {
+            width: 500px;
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+    <div id="map_canvas"></div>
+</body>
+<script src="https://maps.googleapis.com/maps/api/js"></script>
+<script>
+    var geocoder;
+    var map, cloud;
+    var counter = 0;
+    var markers = [];
+    var locations = [];
+
+    geocoder = new google.maps.Geocoder();
+
+    var addresses = [ 'Bulgaria', '', 'Bulgaria, Plovdiv' ];
+
+    for(i in addresses) {
+        codeAddress(addresses[i]);
+    }
+
+    function codeAddress(address) {
+        geocoder.geocode( { 'address': address}, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                locations.push(new google.maps.LatLng(results[0].geometry.location))
+
+            } 
+        });
+    } 
+
+
+    var image = new google.maps.MarkerImage(
+        'http://www.bookyourparis.com/images-site/beachflag.png',
+        new google.maps.Size(28,54),
+        new google.maps.Point(0,0),
+        new google.maps.Point(14,54)
+    );
+
+    function init()
+    {
+        //alert(locations.length);
+        geocoder = new google.maps.Geocoder();
+        var latlng = new google.maps.LatLng(-34.397, 150.644);
+        var myOptions = {
+            zoom: 2,
+            center: latlng,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        }
+        map = new google.maps.Map(document.getElementById('map_canvas'), myOptions);
+
+        for (var i = 0; i < locations.length; i++) {
+            makeMarker(locations[i]);
+        }
+
+
+        centerMap();
+    }
+
+    function centerMap() 
+    {
+        map.setCenter(markers[markers.length-1].getPosition());
+    }
+
+    function makeMarker(location) 
+    {
+
+        var marker = new google.maps.Marker({
+            map: map, 
+            icon: image,
+            position: location//results[0].geometry.location
+        });
+        markers.push(marker);
+
+        //alert(results[0].formatted_address);
+        var contentString = 'Content comes here';
+
+        var infowindow = new google.maps.InfoWindow({
+            content: contentString
+        });
+
+        google.maps.event.addListener(marker, 'mouseover', function() {
+            infowindow.open(map,this);
+        });
+
+        google.maps.event.addListener(marker, 'mouseout', function() {
+            infowindow.close(map,this);
+        });
+    }
+
+    google.maps.event.addDomListener(window, 'load', init);
+
+</script>
+</html>

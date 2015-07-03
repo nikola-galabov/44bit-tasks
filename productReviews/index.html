@@ -1,0 +1,117 @@
+
+ <!-- <h3>Integration options</h3>
+
+<script type="text/javascript">
+	var OrderDetails = [['', '','some id','some name'], ['', '','productid2','some name'], ['', '','productid3','some name']];
+	//var sa_products = { 'productid1':'Product Description One', 'productid2':'Product Description Two', 'productid3':'Product Description Three' };
+	var test = {};
+
+	for (var i=0; i < OrderDetails.length; i++) {
+		/* Include all products in the object below 'product id':'Product Name' */
+		test[OrderDetails[i][2]] = OrderDetails[i][3];
+	}
+
+	console.log(test);
+	console.log(sa_products);
+</script>
+
+ <script type="text/javascript"> 
+	var sa_values = { 'site':4624 };  
+
+	function saLoadScript(src) { 
+		var js = window.document.createElement("script"); 
+		js.src = src; 
+		js.type = "text/javascript"; 
+		document.getElementsByTagName("head")[0].appendChild(js);
+	} 
+
+	var d = new Date(); 
+	if (d.getTime() - 172800000 > 1433850731000) {
+		//saLoadScript("/productReviews/script.js");
+		saLoadScript("//www.shopperapproved.com/thankyou/rate/4624.js");
+	} else {
+		saLoadScript("//direct.shopperapproved.com/thankyou/rate/4624.js?d=" + d.getTime());
+	}
+ </script>
+ -->
+<hr>
+<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<h3>Product page code</h3>
+<script type="text/javascript">
+
+	function asd() {
+		var sa_products_count = 10; 
+		var sa_date_format = 'F j, Y'; 
+		var sa_product = prodCode;
+
+		function saLoadScript(src) { 
+			var js = window.document.createElement("script"); 
+			js.src = src; 
+			js.type = "text/javascript"; 
+			document.getElementsByTagName("head")[0].appendChild(js); 
+		}
+
+		var $reviwHeadre = jQuery('<div id="review_header"></div>');
+		var $productPage = jQuery('<div id="product_page"></div>');
+		var $reviwImage = jQuery('<div id="review_image"><a href="http://www.shopperapproved.com/reviews/batterysharks.com/" target="_blank" rel="nofollow"></a></div>');
+
+		if(sa_product != "") {
+			saLoadScript('//www.shopperapproved.com/product/4624/'+sa_product+'.js'); 
+			var container = jQuery('<div>');
+			container.append($reviwHeadre);
+			container.append($productPage);
+			container.append($reviwImage);
+			container.appendTo('#right-content');
+		}
+	}
+	var sa_products_count = 10; 
+	var sa_date_format = 'F j, Y'; 
+	var sa_product = 123;
+
+	function saLoadScript(src) { 
+		var js = window.document.createElement("script"); 
+		js.src = src; 
+		js.type = "text/javascript"; 
+		document.getElementsByTagName("head")[0].appendChild(js); 
+	}
+
+	saLoadScript('//www.shopperapproved.com/product/4624/'+sa_product+'.js'); 
+
+	var $reviwHeadre = $('<div id="review_header"></div>');
+	var $productPage = $('<div id="product_page"></div>');
+	var $reviwImage = $('<div id="review_image"><a href="http://www.shopperapproved.com/reviews/batterysharks.com/" target="_blank" rel="nofollow"></a></div>');
+
+		$('body').append($reviwHeadre);
+		$('body').append($productPage);
+		$('body').append($reviwImage);
+
+
+	
+
+</script>
+
+<script>
+	var sa_products_count = 10; 
+	var sa_date_format = 'F j, Y'; 
+	var sa_product = prodCode;
+
+	function saLoadScript(src) { 
+		var js = window.document.createElement("script"); 
+		js.src = src; 
+		js.type = "text/javascript"; 
+		document.getElementsByTagName("head")[0].appendChild(js); 
+	}
+
+	var $reviwHeadre = jQuery('<div id="review_header"></div>');
+	var $productPage = jQuery('<div id="product_page"></div>');
+	var $reviwImage = jQuery('<div id="review_image"><a href="http://www.shopperapproved.com/reviews/batterysharks.com/" target="_blank" rel="nofollow"></a></div>');
+
+	if(sa_product != "") {
+		saLoadScript('//www.shopperapproved.com/product/4624/'+sa_product+'.js'); 
+		var container = jQuery('<div class="product-review">');
+		container.append($reviwHeadre);
+		container.append($productPage);
+		container.append($reviwImage);
+		container.appendTo('#right-content');
+	}
+</script>
