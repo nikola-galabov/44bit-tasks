@@ -1,0 +1,301 @@
+/*General styles*/
+body {
+	padding-bottom: 50px;
+}
+
+.no-padding {
+	padding: 0;
+}
+
+.padding-left-none {
+	padding-left: 0;
+}
+
+.padding-right-none {
+	padding-right: 0;
+}
+
+.hiden {
+	display: none;
+}
+
+.clear-both {
+	clear: both;
+}
+
+textarea {
+    resize: vertical;
+    height: 150px;
+	max-height: 250px;
+}
+
+/*Front page*/
+.front-buttons-container {
+	top: 50%;
+	position: absolute;
+	margin-left: auto;
+	margin-right: auto;
+	left: 0;
+	right: 0;
+}
+
+.front-buttons-container div {
+	text-align: center;
+}
+
+.btn-block {
+	display: block;
+	width: 100%;
+	height: 150px;
+	margin-top: -75px;
+	font-weight: bold;
+	border-radius: 25px;
+	border: 1px solid;
+	line-height: 150px;
+}
+
+/*Quotes Form*/
+.select2-container.form-control {
+	padding: 0;
+	height: 100%;
+	margin-bottom: 10px;
+}
+
+#accessorials {
+	display: none;
+}
+
+.button-holder {
+	text-align: center;
+}
+
+#liftgate-dest-container, #liftgate-origin-container {
+	display: none;
+}
+
+/*Autocomplete*/
+.autocomplete-container {
+	position: absolute;
+	background-color: white;
+	z-index: 3;
+	border: 1px solid black;
+	padding: 0;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	list-style: none;
+}
+
+.autocomplete-container li {
+	margin-right: 10px;
+	margin-left: 10px;
+}
+
+.autocomplete-container li:hover {
+	background-color: gray;
+}
+
+.form-group.col-md-4.col-xs-4, .form-group.col-md-4.col-xs-4 {
+	margin-bottom: 20px;
+}
+
+/*Validation*/
+input.error {
+	background: rgb(248, 237, 237);
+	border: 1px solid red;
+}
+
+div.error {
+	color: red;
+}
+
+/*Items*/
+#tabs {
+	margin-bottom: 10px;
+}
+
+.btn-remove {
+	background-color: transparent;
+	border: none;
+	margin: 0;
+	padding: 0;
+}
+
+/*Calculator*/
+.calculator-container {
+	background-color: rgb(242,242,242);
+	border: 1px solid silver;
+	padding: 12px;
+	margin-top: 10px;
+	border-radius: 5px;
+}
+
+.calculator-container img {
+	float: left;
+	max-height: 40px;
+	margin-right: 20px;
+}
+
+/*Rates*/
+#rates #rates-header h2 {
+	border-bottom: 1px solid;
+}
+
+
+#rates #rates-header .carrier-name, #rates #rates-header .service-type {
+	border-bottom: 1px dotted;
+}
+
+.carrier-name {	
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+#rates #rates-header .carrier-name {
+	height: 35px;
+}
+
+#rates #rates-header .rate { 
+	line-height: 35px;
+}
+
+#rates #rates-header .days, #rates #rates-header .price  {
+	padding: 5px 5px 5px 15px;
+} 
+
+#fastest-delivery .rate {
+	margin-top: 20px;
+}
+
+.rate, .rate-error {
+	display: block;
+	min-height: 65px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	text-align: center;
+	line-height: 65px;
+	font-size: 18px;
+	border-radius: 5px;
+	border: 2px solid silver;
+}
+
+.carrier-name, .service-type, .days {
+	text-align: left;
+}
+
+.price {
+	text-align: right;
+}
+
+.glyphicon.glyphicon-time {
+	font-size: 12px;
+	margin-right: 3px;
+}
+
+.glyphicon.glyphicon-download, .service-option {
+	font-size: 12px;
+	margin-left: 3px;
+}
+
+.glyphicon.glyphicon-usd {
+	font-size: 15px;
+}
+
+.rate-error {
+	display: none;
+}
+
+.error-header {
+	font-size: 25px;
+	margin: 15px 0 15px 0;
+}
+
+#number-of-errors {
+	color: darkred;
+	font-weight: bold;
+}
+
+.show-hidden-rates, .hidden-rate
+{
+    cursor: pointer;
+}
+
+.hidden-rate {
+	margin-top: -10px;
+	border-bottom: none;
+	border-top: none;
+	border-radius: 0;
+}
+
+#loading-image {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+@media (max-width: 991px) {
+	.carrier-name, .service-type {
+		border-bottom: 1px dotted;
+	}
+
+	.rate, .rate-error { 
+		line-height: 35px;
+	}
+}
+
+@media (max-width: 1200px) {
+	#rates-header {
+		display: none;
+	}
+}
+
+/*SHIPMENT FORM*/
+#quote-info{
+	border: 1px solid;
+	margin: 50px 15px 50px 15px;
+	padding: 10px;
+}
+
+#shipment-items .row {
+	padding: 15px 0 15px 0;
+}
+
+#shipment-items .col-md-2 {
+	text-align: center;
+}
+
+#shipment-items .col-md-2 button {
+	background: none;
+	border: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
