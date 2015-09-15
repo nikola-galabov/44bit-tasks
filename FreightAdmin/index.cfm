@@ -1,4 +1,4 @@
-<cfinclude template="includes/header.cfm">
+<cfinclude template="../../include/header.cfm">
 <div class="container">
 	<div class="front-buttons-container">
 		<div class="front-button-container col-md-3 col-sm-6">
@@ -15,4 +15,4 @@
 		</div>
 	</div>
 </div>
-<cfinclude template="includes/footer.cfm">
+<cfinclude template="../../include/footer.cfm">

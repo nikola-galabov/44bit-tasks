@@ -18,7 +18,7 @@
 			SELECT 
 				`loc_City` as `City`, `loc_ZipCode` as `ZipCode`,`loc_address` as `address` ,`loc_company` as `company`, `loc_State` as `State`
 			FROM `Location`
-			WHERE `loc_typeID` = 1
+			WHERE `loc_typeID` = 1 
 			
 			<cfif ARGUMENTS.zipCode NEQ "">
 				AND `loc_ZipCode` = <cfqueryparam value="#zipCode#" cfsqltype="cf_sql_varchar">
@@ -26,6 +26,21 @@
 		</cfquery>
 
 		<cfreturn "#qLocations#"/>
+	</cffunction>
+
+	<cffunction name="getCityByZipCode" datasource="OrderManager">
+		<cfargument name="zip" required="true"/>
+		
+		<cfquery name="qCity">
+			SELECT 
+				`zipCode`, `City`, `State`
+			FROM
+				`ZipCodes`
+			WHERE 
+				`ZipCode` = <cfqueryparam value="#zip#" cfsqltype="cf_sql_char">
+		</cfquery>
+
+		<cfreturn #qCity#/>
 	</cffunction>
 
 	<cffunction name="getCities" access="remote" returntype="String" returnformat="JSON">

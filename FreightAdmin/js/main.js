@@ -1,7 +1,9 @@
 // TODO List:
 // - I have to make descriptive comments
-// - Find solution - how to pass the data of the remote select2 requests to the new form (items)
-// - Remote request to build the packaging and freight class, a lot of bugs in add new item
+// - Refactor the code
+// - I select same elements many times with jQuery it's good idea to put them in the global scope!
+// - I have to make a function for all events and call it when I create new item
+// - have to fix the bug with jquery validate and select2
 // ------------------------------
 
 $(document).ready(function(){	
@@ -13,14 +15,13 @@ $(document).ready(function(){
 	validation();
 });
 
-
-// !!!!!!!!!!!!VERY IMPORTANT - I have to disable the option to click on the rate's button if one of the input's value is changed!
-
 function generalSetup() {
 	var $originType = $('select[name=originType]');
 	var $destType = $('select[name=destType]');
 	var $liftGateOriginContainer = $('#liftgate-origin-container');
 	var $liftGateDestContainer = $('#liftgate-dest-container');
+	var $insidePickupContainer = $('#inside-pickup-container');
+	var $insideDeliveryContainer = $('#inside-delivery-container');
 
 	// add new item
 	$('#add-item').click(addNewItem);
@@ -30,18 +31,34 @@ function generalSetup() {
 
 	// Show/hide Liftgate and inside pickup options 
 	$originType.change(function() {
-		if($originType.val() !== 'business no dock') {
+		if($originType.val() == 'business dock' || $originType.val() == 'trade show') {
 			$liftGateOriginContainer.hide();
+			$('#liftgate-origin').prop('checked', '');
 		} else {
 			$liftGateOriginContainer.show();
+		}
+
+		if($originType.val() == 'business dock' || $originType.val() == 'trade show' || $originType.val() == 'construction') {
+			$insidePickupContainer.hide();
+			$('#inside-pickup-origin').prop('checked', '');
+		} else {
+			$insidePickupContainer.show();
 		}
 	});
 
 	$destType.change(function() {
-		if($destType.val() !== 'business no dock') {
+		if($destType.val() == 'business dock' || $originType.val() == 'trade show') {
 			$liftGateDestContainer.hide();
+			$('#liftgate-dest').prop('checked', '');
 		} else {
 			$liftGateDestContainer.show();
+		}
+
+		if($destType.val() == 'business dock' || $originType.val() == 'trade show' || $destType.val() == 'construction') {
+			$insideDeliveryContainer.hide();
+			$('#inside-delivery').prop('checked', '');
+		} else {
+			$insideDeliveryContainer.show();
 		}
 	});
 
@@ -126,19 +143,24 @@ function generalSetup() {
 	$('.calculation').on('input', function() {
     	buildCalculator(1);
 	});
+
+	// bootstrap datepicker
+	var datepicker = $.fn.datepicker.noConflict(); // return $.fn.datepicker to previously assigned value
+	$.fn.bootstrapDP = datepicker;                 // give $().bootstrapDP the bootstrap-datepicker functionality
+
+	var date = Date();
+
+	$('.datepicker').bootstrapDP({
+		format: 'yyyy-mm-dd',
+		weekStart: 1,
+		startDate: date
+	});
+
+	$('.datepicker').bootstrapDP('setDate', date);
 }
 
 function fillWithCustomValues() {
-	// Set pick up date to today
-	Date.prototype.toDateInputValue = (function() {
-	    var local = new Date(this);
-	    local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
-	    return local.toJSON().slice(0,10);
-	});
-
-    $('input[type=date]').val(new Date().toDateInputValue());
-
-    // Set values to lenght width and height
+    // Set values to length width and height
     fillLengthWidtAndHeight(1);
     $('#package-item-1').change(function() {
     	fillLengthWidtAndHeight(1)
@@ -156,35 +178,35 @@ function fillWithCustomValues() {
 
 function fillLengthWidtAndHeight(index) {
 	var packagingValue = $('#package-item-' + index).val();
-	var $lenght = $('#length-item-' + index);
+	var $length = $('#length-item-' + index);
 	var $width = $('#width-item-' + index);
 	var $height = $('#height-item-' + index);
 
 	switch(packagingValue) {
 		case "Pallets_42x42":
-			$lenght.val('42');
+			$length.val('42');
 			$width.val('42');
 			$height.val('48');
 		break;
 		case "Pallets_other":
-			$lenght.val('');
+			$length.val('');
 			$width.val('');
 			$height.val('');
 		break;
 		case "45/45":
-			$lenght.val('45');
+			$length.val('45');
 			$width.val('45'); 
 		break;
 		case "Pallets_48x40":
-			$lenght.val('48');
+			$length.val('48');
 			$width.val('40'); 
 		break;
 		case "Pallets_48x48":
-			$lenght.val('48');
+			$length.val('48');
 			$width.val('48'); 
 		break;
 		case "Pallets_60x48":
-			$lenght.val('60');
+			$length.val('60');
 			$width.val('48'); 
 		break;
 	}
@@ -195,21 +217,28 @@ function changePackaging(index) {
 	var lengthVal = parseInt( $('#length-item-' + index).val() );
 	var widthVal = parseInt( $('#width-item-' + index).val() );
 	var value = "Pallets_42x42";
+	var text = "Pallets (42x42)";
 
 	if(lengthVal === 42 && widthVal === 42) {
 		value = "Pallets_42x42";
+		text = "Pallets (42x42)";
 	} else if(lengthVal === 48 && widthVal === 40) {
 		value = "Pallets_48x40";
+		text = "Pallets (48x40)";
 	} else if(lengthVal === 48 && widthVal === 48) {
 		value = "Pallets_48x48";
+		text = "Pallets (48x48)";
 	} else if(lengthVal === 60 && widthVal === 48) {
 		value = "Pallets_60x48";
+		text = "Pallets (60x48)";
 	} else {
 		value = "Pallets_other";
+		text = "Pallets (other)";
 	}
 	
 	$packaging.val(value);
-	$('#s2id_package-item-1').find('span.select2-chosen').text(value);
+	$('#select2-package-item-' + index + '-container').text(text);
+	// $('#s2id_package-item-1').find('span.select2-chosen').text(value);
 }
 
 function addNewItem() {
@@ -235,28 +264,41 @@ function addNewItem() {
 
 	// Packaging
 	var $packaging = $('<div class="form-group">')
-		.append(
-			'<label for="package' + postFix + '">Packaging</label>' +
-			'<select class="form-control" name="package' + postFix + '" id="package' + postFix + '" required>' +
-				'<option value="42/42" selected="selected">Pallets (42x42)</option>' +
-				'<option value="45/45">Pallets (45x45)</option>' +
-				'<option value="48/40">Pallets (48x40)</option>' +
-				'<option value="48/48">Pallets (48x48)</option>' +
-				'<option value="60/48">Pallets (60x48)</option>' +
-				'<option value="bags">Bags</option>' +
-				'<option value="bales">Bales</option>' +
-				'<option value="boxes">Boxes</option>' +
-				'<option value="bundles">Bundles</option>' +
-			'</select>'
-			);
+	.append(
+		'<label for="package' + postFix + '">Packaging</label>' +
+		'<select class="form-control quote-input" name="package' + postFix + '" id="package' + postFix + '" required>' +
+		'</select>'
+	);
 
 	$row.append($packaging);
+	// get options
+	$.ajax({
+		url: '/secure/freightadmin/models/item.cfc?method=getPackageTypesRemote',
+		type: 'get',
+	})
+	.done(function(data) {
+		var data = JSON.parse(data);
+		for(var i = 0; i <= data.length - 1; i++) {
+			var $option = $('<option value="' + data[i]['value'] + '">' + data[i]['name'] + '</option>');
+			$option.appendTo('#package' + postFix);
+		}
+
+		$('#package' + postFix).select2({
+			width: "100%"
+		});
+
+		// Default values of length width and height
+		fillLengthWidtAndHeight(counter);
+	    $('#package-item-' + counter).change(function() {
+	    	fillLengthWidtAndHeight(counter);
+	    });
+	});
 
 	// Quantity
 	var $quantity = $('<div class="form-group col-md-4 col-xs-4 padding-left-none">')
 		.append(
 			'<label for="quantity' + postFix + '">Quantity</label>' +
-			'<input class="form-control calculation item-input" type="number" min=0 name="quantity' + postFix + '" id="quantity' + postFix + '" value="1" required>'
+			'<input class="form-control calculation item-input quote-input" type="number" min=0 name="quantity' + postFix + '" id="quantity' + postFix + '" value="1" required>'
 		);
 	$quantity.appendTo($row);	
 
@@ -264,7 +306,7 @@ function addNewItem() {
 	var $weight = $('<div class="form-group col-md-4 col-xs-4">')
 		.append(
 			'<label for="weight' + postFix + '">Weight</label>' +
-			'<input class="form-control calculation item-input" type="number" name="weight' + postFix + '" id="weight' + postFix + '" required>'
+			'<input class="form-control calculation item-input quote-input" type="number" name="weight' + postFix + '" id="weight' + postFix + '" required>'
 		);
 	$weight.appendTo($row);
 
@@ -272,7 +314,7 @@ function addNewItem() {
 	var $weightUnit = $('<div class="form-group col-md-4 col-xs-4 padding-right-none">')
 		.append(
 			'<label for="weight-unit' + postFix + '">Lbs/Kg</label>' +
-			'<select class="form-control" name="weightUnit' + postFix + '" id="weight-unit' + postFix + '">' +
+			'<select class="form-control quote-input" name="weightUnit' + postFix + '" id="weight-unit' + postFix + '">' +
 				'<option value="lbs">Lbs</option>' +
 				'<option value="kg">Kg</option>' +
 			'</select>'
@@ -283,7 +325,7 @@ function addNewItem() {
 	var $length = $('<div class="form-group col-md-3 col-xs-3 padding-left-none clear-both">')
 		.append(
 			'<label for="length' + postFix + '">Length</label>' +
-			'<input class="form-control calculation item-input" type="number" name="length' + postFix + '" id="length' + postFix + '" required>'
+			'<input class="form-control calculation item-input quote-input" type="number" name="length' + postFix + '" id="length' + postFix + '" required>'
 		);
 	$length.appendTo($row);
 
@@ -291,7 +333,7 @@ function addNewItem() {
 	var $width = $('<div class="form-group col-md-3 col-xs-3">')
 		.append(
 			'<label for="width' + postFix + '">Width</label>' +
-			'<input class="form-control calculation item-input" type="number" name="width' + postFix + '" id="width' + postFix + '" required>'
+			'<input class="form-control calculation item-input quote-input" type="number" name="width' + postFix + '" id="width' + postFix + '" required>'
 		);
 	$width.appendTo($row);
 
@@ -299,7 +341,7 @@ function addNewItem() {
 	var $height = $('<div class="form-group col-md-3 col-xs-3">')
 		.append(
 			'<label for="height' + postFix + '">Height</label>' +
-			'<input class="form-control calculation item-input" type="number" name="height' + postFix + '" id="height' + postFix + '" required>'
+			'<input class="form-control calculation item-input quote-input" type="number" name="height' + postFix + '" id="height' + postFix + '" required>'
 		);
 	$height.appendTo($row);
 
@@ -307,9 +349,9 @@ function addNewItem() {
 	var $lengthUnit = $('<div class="form-group col-md-3 col-xs-3 padding-right-none">')
 		.append(
 			'<label for="length-unit' + postFix + '">In/Cm</label>' +
-			'<select class="form-control" name="lengthUnit' + postFix + '" id="length-unit' + postFix + '" required>' +
-				'<option value="in" selected="selected">in</option>' +
-				'<option value="cm">cm</option>' +
+			'<select class="form-control quote-input" name="lengthUnit' + postFix + '" id="length-unit' + postFix + '" required>' +
+				'<option value="in" selected="selected">In</option>' +
+				'<option value="cm">Cm</option>' +
 			'</select>'
 		);
 	$lengthUnit.appendTo($row);
@@ -318,40 +360,38 @@ function addNewItem() {
 	var $freightClass = $('<div class="form-group col-md-4 col-xs-4 padding-left-none">')
 		.append(
 			'<label for="freight-class' + postFix + '">Freight class</label>' +
-			'<select class="form-control" name="freightClass' + postFix + '" id="freight-class' + postFix + '">' +
-				'<option value="55" selected="selected">55</option>' +
-				'<option value="50">50</option>' +
-				'<option value="60">60</option>' +
-				'<option value="65">65</option>' +
-				'<option value="70">70</option>' +
-				'<option value="77.5">77.5</option>' +
-				'<option value="85">85</option>' +
-				'<option value="92.5">92.5</option>' +
-				'<option value="100">100</option>' +
-				'<option value="110">110</option>' +
-				'<option value="125">125</option>' +
-				'<option value="150">150</option>' +
-				'<option value="175">175</option>' +
-				'<option value="200">200</option>' +
-				'<option value="250">250</option>' +
-				'<option value="300">300</option>' +
-				'<option value="400">400</option>' +
-				'<option value="500">500</option>' +
+			'<select class="form-control quote-input" name="freightClass' + postFix + '" id="freight-class' + postFix + '">' +
 			'</select>'
 		);
 	$freightClass.appendTo($row);
 
+	$.ajax({
+		url: '/secure/freightadmin/models/item.cfc?method=getFreightClassesRemote',
+		type: 'get',
+	})
+	.done(function(data) {
+		var data = JSON.parse(data);
+		for(var i = 0; i <= data.length - 1; i++) {
+			var $option = $('<option value="' + data[i]['value'] + '">' + data[i]['name'] + '</option>');
+			$option.appendTo('#freight-class' + postFix);
+		}
+
+		$('#freight-class' + postFix).select2({
+			width: "100%"
+		});
+	});
+
 	// Hazmat?
-	var $hazmat = $('<div class="form-group col-md-6 col-xs-6">')
+	var $hazmat = $('<div class="form-group col-md-8 col-xs-8">')
 		.append(
 			'<label>Hazmat?</label>' +
 			'<div>' +
 				'<div class="col-md-6 col-xs-6 col-sm-6">' +
-					'<input type="radio" name="hazmat' + postFix + '" id="yes' + postFix + '" value="true">' +
+					'<input type="radio" class="quote-input" name="hazmat' + postFix + '" id="yes' + postFix + '" value="true">' +
 					' <label for="yes' + postFix + '">Yes</label>' +
 				'</div>' +
 				'<div class="col-md-6 col-xs-6 col-sm-6">' +
-					'<input type="radio" name="hazmat' + postFix + '" id="no' + postFix + '" value="false" checked="checked">' +
+					'<input type="radio" class="quote-input" name="hazmat' + postFix + '" id="no' + postFix + '" value="false" checked="checked">' +
 					' <label for="no' + postFix + '">No</label>' +
 				'</div>' +
 			'</div>'
@@ -361,7 +401,10 @@ function addNewItem() {
 	$itemContainer.appendTo('#tabs');
 
 	// refresh select2 and validate
-	$('select').not('.select2-ajax').select2();
+	$('#item-' + counter + ' select').select2({
+		width: "100%"
+	});
+
 	validation(counter);
 
 	// Append tab
@@ -388,12 +431,6 @@ function addNewItem() {
 	$('.calculation').on('input', function() {
     	buildCalculator(counter);
 	});
-
-	// Default values of length width and height
-	fillLengthWidtAndHeight(counter);
-    $('#package-item-' + counter).change(function() {
-    	fillLengthWidtAndHeight(counter);
-    });
 
     // Change packaging on length/width change
     $('#length-item-' + counter).change(function() {
@@ -450,27 +487,27 @@ function validation(counter) {
 
 	rulesObject['quantity-item-' + counter] = {
 		required: true,
-		min: 0,
+		min: 1,
 	};
 
 	rulesObject['weight-item-' + counter] = {
 		required: true,
-		min: 0,
+		min: 1,
 	};
 
 	rulesObject['length-item-' + counter] = {
 		required: true,
-		min: 0,
+		min: 1,
 	};
 
 	rulesObject['width-item-' + counter] = {
 		required: true,
-		min: 0,
+		min: 1,
 	};
 
 	rulesObject['height-item-' + counter] = {
 		required: true,
-		min: 0,
+		min: 1,
 	};
 
 	for(prop in rulesObject) {
@@ -505,8 +542,10 @@ function validation(counter) {
 			$('#content').append($('<img id="loading-image" src="/secure/freightadmin/images/loading.gif">'));
 
 			// test
-			var exampleData = '{"pickupDate":"2015-07-15","originPostalCode":"95403","destPostalCode":"89011","origintType":"business no dock","destType":"business dock","items":[{"weight":2000,"freightClass":55,"length":42,"width":42,"height":48,"package":"Pallets_other","pieces":3,"hazardous":false}],"charges":["liftgate pickup"],"rates":[{"carrierCode":"odfl","carrier":"Old Dominion Freight Line","paymentTerms":"Inbound Collect","serviceType":"standard","status":"error","ref":"0","interline":false,"error":"Customer not autorated","time":462},{"carrierCode":"odfl","carrier":"Old Dominion Freight Line","paymentTerms":"Inbound Collect","serviceType":"guaranteed","status":"error","ref":"0","interline":false,"error":"Customer not autorated","time":462},{"carrierCode":"wtva","carrier":"Wilson Trucking","paymentTerms":"Outbound Prepaid","status":"error","error":"Unable to quote jointline rates.  Please call the Wilson Trucking Corporation General Office at 1-540-949-3200 for a rate quote.  Thank you."},{"carrierCode":"abfs","carrier":"ABF Freight System","paymentTerms":"Inbound Collect","serviceType":"standard","status":"error","interline":true,"error":"Our quote system was not able to complete your quote automatically.","time":589},{"carrierCode":"pyle","carrier":"A Duie Pyle","paymentTerms":"Third Party Prepaid","serviceType":"standard","status":"error","error":"Your pickup location is not in our service area.","time":722},{"carrierCode":"aact","carrier":"AAA Cooper Transportation","paymentTerms":"Third Party Prepaid","serviceType":"standard","status":"error","interline":false,"error":"No Service Available for Specified Points","time":879},{"total":515.77,"carrierCode":"rlca","carrier":"R+L Carriers","paymentTerms":"Inbound Collect","serviceType":"standard","status":"ok","ref":"15543043","days":2,"time":1332},{"total":596.22,"carrierCode":"rlca","carrier":"R+L Carriers","paymentTerms":"Inbound Collect","serviceType":"guaranteed","serviceOption":"17","status":"ok","ref":"15543043","days":2,"time":1333},{"total":636.45,"carrierCode":"rlca","carrier":"R+L Carriers","paymentTerms":"Inbound Collect","serviceType":"guaranteed","serviceOption":"17","status":"ok","ref":"15543043","days":2,"time":1333},{"total":676.68,"carrierCode":"rlca","carrier":"R+L Carriers","paymentTerms":"Inbound Collect","serviceType":"guaranteed","serviceOption":"17","status":"ok","ref":"15543043","days":2,"time":1333},{"total":536.99,"carrierCode":"exla","carrier":"Estes Express Lines","paymentTerms":"Inbound Collect","serviceType":"standard","status":"ok","ref":"5067611","days":2,"time":1417},{"total":706.47,"carrierCode":"exla","carrier":"Estes Express Lines","paymentTerms":"Inbound Collect","serviceType":"guaranteed","serviceOption":"17","status":"ok","ref":"5067611","days":2,"time":1417},{"total":1045.43,"carrierCode":"exla","carrier":"Estes Express Lines","paymentTerms":"Inbound Collect","serviceType":"guaranteed","serviceOption":"10","status":"ok","ref":"5067611","days":2,"time":1417},{"total":875.95,"carrierCode":"exla","carrier":"Estes Express Lines","paymentTerms":"Inbound Collect","serviceType":"guaranteed","serviceOption":"12","status":"ok","ref":"5067611","days":2,"time":1417},{"total":445.26,"carrierCode":"upgf","carrier":"UPS Freight","paymentTerms":"Third Party Prepaid","serviceType":"guaranteed","serviceOption":"17","status":"ok","days":2,"time":1675},{"total":531.22,"carrierCode":"upgf","carrier":"UPS Freight","paymentTerms":"Third Party Prepaid","serviceType":"guaranteed","serviceOption":"12","status":"ok","days":2,"time":1675},{"carrierCode":"rdfs","carrier":"Roadrunner Transportation Services","paymentTerms":"Third Party Prepaid","serviceType":"standard","status":"error","error":"There is no standard service from 95403 to 89011","time":1776},{"total":310.97,"carrierCode":"ctii","carrier":"Central Transport","paymentTerms":"Inbound Collect","serviceType":"standard","status":"ok","days":2,"interline":false,"time":2174},{"total":1714.5,"carrierCode":"cenf","carrier":"Central Freight Lines","paymentTerms":"Inbound Collect","serviceType":"standard","status":"ok","ref":"12060485","days":2,"time":2992},{"total":348,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"standard","status":"ok","ref":"37186926","days":3,"time":6415},{"total":363,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"guaranteed","serviceOption":"17","status":"ok","ref":"37186925","days":3,"time":6415},{"total":404.6,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"17","status":"ok","days":2,"time":6415},{"total":854.6,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"17","status":"ok","days":3,"time":6415},{"total":854.6,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"17","status":"ok","days":4,"time":6415},{"total":404.6,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"17","status":"ok","days":5,"time":6415},{"total":404.6,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"17","status":"ok","days":6,"time":6415},{"total":418.75,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"12","status":"ok","days":2,"time":6415},{"total":868.75,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"12","status":"ok","days":3,"time":6415},{"total":868.75,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"12","status":"ok","days":4,"time":6415},{"total":418.75,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"12","status":"ok","days":5,"time":6415},{"total":418.75,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"12","status":"ok","days":6,"time":6415},{"total":432.9,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"0","status":"ok","days":2,"time":6415},{"total":882.9,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"0","status":"ok","days":3,"time":6415},{"total":882.9,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"0","status":"ok","days":4,"time":6416},{"total":432.9,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"0","status":"ok","days":5,"time":6416},{"total":432.9,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"0","status":"ok","days":6,"time":6416}],"originCity":"Santa Rosa","originState":"CA","originCountryCode":"US","destCity":"Henderson","destState":"NV","destCountryCode":"US"}';
+			var exampleData = '{"pickupDate":"2015-07-21","originPostalCode":"79703","destPostalCode":"21704","originType":"business no dock","destType":"business dock","items":[{"weight":200,"freightClass":55,"length":42,"width":42,"height":48,"pieces":1,"hazardous":false,"package":"Pallets_other"},{"weight":2000,"freightClass":55,"length":42,"width":42,"height":48,"package":"Pallets_other","pieces": 3,"hazardous":false}],"charges":["liftgate pickup"],"rates":[{"carrierCode":"wtva","carrier":"Wilson Trucking","paymentTerms":"Outbound Prepaid","status":"error","error":"Unable to quote jointline rates.  Please call the Wilson Trucking Corporation General Office at 1-540-949-3200 for a rate quote.  Thank you."},{"total":189.31,"carrierCode":"odfl","carrier":"Old Dominion Freight Line","paymentTerms":"Third Party Prepaid","serviceType":"standard","status":"ok","ref":"41239330","days":4,"interline":false,"time":990},{"total":236.71,"carrierCode":"odfl","carrier":"Old Dominion Freight Line","paymentTerms":"Third Party Prepaid","serviceType":"guaranteed","status":"ok","ref":"41239330","days":4,"interline":false,"time":990},{"total":141.27,"carrierCode":"rlca","carrier":"R+L Carriers","paymentTerms":"Outbound Prepaid","serviceType":"standard","status":"ok","ref":"15802002","days":4,"time":1019},{"total":176.27,"carrierCode":"rlca","carrier":"R+L Carriers","paymentTerms":"Outbound Prepaid","serviceType":"guaranteed","serviceOption":"17","status":"ok","ref":"15802002","days":4,"time":1019},{"total":211.27,"carrierCode":"rlca","carrier":"R+L Carriers","paymentTerms":"Outbound Prepaid","serviceType":"guaranteed","serviceOption":"17","status":"ok","ref":"15802002","days":4,"time":1019},{"total":231.27,"carrierCode":"rlca","carrier":"R+L Carriers","paymentTerms":"Outbound Prepaid","serviceType":"guaranteed","serviceOption":"17","status":"ok","ref":"15802002","days":4,"time":1019},{"total":515.87,"carrierCode":"abfs","carrier":"ABF Freight System","paymentTerms":"Outbound Prepaid","serviceType":"standard","status":"ok","ref":"BCY1982025","days":4,"interline":false,"time":1228},{"total":623.49,"carrierCode":"abfs","carrier":"ABF Freight System","paymentTerms":"Outbound Prepaid","serviceType":"guaranteed","serviceOption":"17","status":"ok","ref":"BCY1982025","days":3,"interline":false,"time":1228},{"total":617.05,"carrierCode":"abfs","carrier":"ABF Freight System","paymentTerms":"Outbound Prepaid","serviceType":"guaranteed","serviceOption":"12","status":"ok","ref":"BCY1982025","days":6,"interline":false,"time":1228},{"total":575.28,"carrierCode":"abfs","carrier":"ABF Freight System","paymentTerms":"Outbound Prepaid","serviceType":"guaranteed","serviceOption":"17","status":"ok","ref":"BCY1982025","days":6,"interline":false,"time":1228},{"total":290.84,"carrierCode":"exla","carrier":"Estes Express Lines","paymentTerms":"Third Party Prepaid","serviceType":"standard","status":"ok","ref":"5260258","days":4,"time":1598},{"total":205.29,"carrierCode":"upgf","carrier":"UPS Freight","paymentTerms":"Third Party Prepaid","serviceType":"guaranteed","serviceOption":"17","status":"ok","days":4,"time":1894},{"total":251.08,"carrierCode":"ctii","carrier":"Central Transport","paymentTerms":"Outbound Prepaid","serviceType":"standard","status":"ok","days":4,"interline":false,"time":2188},{"total":210.86,"carrierCode":"rdfs","carrier":"Roadrunner Transportation Services","paymentTerms":"Outbound Prepaid","serviceType":"standard","status":"ok","ref":"9414760","days":6,"time":3741},{"total":417.6,"carrierCode":"pyle","carrier":"A Duie Pyle","paymentTerms":"Third Party Prepaid","serviceType":"standard","status":"ok","ref":"2015072182","days":4,"time":6741},{"total":210,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"standard","status":"ok","ref":"37687195","days":4,"time":16252},{"total":225,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"guaranteed","serviceOption":"17","status":"ok","ref":"37687196","days":4,"time":16252},{"total":255,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"17","status":"ok","days":3,"time":16252},{"total":705,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"17","status":"ok","days":4,"time":16252},{"total":705,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"17","status":"ok","days":5,"time":16252},{"total":255,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"17","status":"ok","days":6,"time":16253},{"total":255,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"17","status":"ok","days":7,"time":16253},{"total":260,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"12","status":"ok","days":3,"time":16253},{"total":710,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"12","status":"ok","days":4,"time":16253},{"total":710,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"12","status":"ok","days":5,"time":16253},{"total":260,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"12","status":"ok","days":6,"time":16253},{"total":260,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"12","status":"ok","days":7,"time":16253},{"total":265,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"0","status":"ok","days":3,"time":16253},{"total":715,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"0","status":"ok","days":4,"time":16253},{"total":715,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"0","status":"ok","days":5,"time":16253},{"total":265,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"0","status":"ok","days":6,"time":16253},{"total":265,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"0","status":"ok","days":7,"time":16253}],"originCity":"Frederick","originState":"MD","originCountryCode":"US","destCity":"Midland","destState":"TX","destCountryCode":"US"}';
+			// var exampleData = '{"pickupDate":"2015-07-15","originPostalCode":"95403","destPostalCode":"89011","originType":"business no dock","destType":"business dock","items":[{"weight":2000,"freightClass":55,"length":42,"width":42,"height":48,"package":"Pallets_other","pieces":3,"hazardous":false}],"charges":["liftgate pickup"],"rates":[{"carrierCode":"odfl","carrier":"Old Dominion Freight Line","paymentTerms":"Inbound Collect","serviceType":"standard","status":"error","ref":"0","interline":false,"error":"Customer not autorated","time":462},{"carrierCode":"odfl","carrier":"Old Dominion Freight Line","paymentTerms":"Inbound Collect","serviceType":"guaranteed","status":"error","ref":"0","interline":false,"error":"Customer not autorated","time":462},{"carrierCode":"wtva","carrier":"Wilson Trucking","paymentTerms":"Outbound Prepaid","status":"error","error":"Unable to quote jointline rates.  Please call the Wilson Trucking Corporation General Office at 1-540-949-3200 for a rate quote.  Thank you."},{"carrierCode":"abfs","carrier":"ABF Freight System","paymentTerms":"Inbound Collect","serviceType":"standard","status":"error","interline":true,"error":"Our quote system was not able to complete your quote automatically.","time":589},{"carrierCode":"pyle","carrier":"A Duie Pyle","paymentTerms":"Third Party Prepaid","serviceType":"standard","status":"error","error":"Your pickup location is not in our service area.","time":722},{"carrierCode":"aact","carrier":"AAA Cooper Transportation","paymentTerms":"Third Party Prepaid","serviceType":"standard","status":"error","interline":false,"error":"No Service Available for Specified Points","time":879},{"total":515.77,"carrierCode":"rlca","carrier":"R+L Carriers","paymentTerms":"Inbound Collect","serviceType":"standard","status":"ok","ref":"15543043","days":2,"time":1332},{"total":596.22,"carrierCode":"rlca","carrier":"R+L Carriers","paymentTerms":"Inbound Collect","serviceType":"guaranteed","serviceOption":"17","status":"ok","ref":"15543043","days":2,"time":1333},{"total":636.45,"carrierCode":"rlca","carrier":"R+L Carriers","paymentTerms":"Inbound Collect","serviceType":"guaranteed","serviceOption":"17","status":"ok","ref":"15543043","days":2,"time":1333},{"total":676.68,"carrierCode":"rlca","carrier":"R+L Carriers","paymentTerms":"Inbound Collect","serviceType":"guaranteed","serviceOption":"17","status":"ok","ref":"15543043","days":2,"time":1333},{"total":536.99,"carrierCode":"exla","carrier":"Estes Express Lines","paymentTerms":"Inbound Collect","serviceType":"standard","status":"ok","ref":"5067611","days":2,"time":1417},{"total":706.47,"carrierCode":"exla","carrier":"Estes Express Lines","paymentTerms":"Inbound Collect","serviceType":"guaranteed","serviceOption":"17","status":"ok","ref":"5067611","days":2,"time":1417},{"total":1045.43,"carrierCode":"exla","carrier":"Estes Express Lines","paymentTerms":"Inbound Collect","serviceType":"guaranteed","serviceOption":"10","status":"ok","ref":"5067611","days":2,"time":1417},{"total":875.95,"carrierCode":"exla","carrier":"Estes Express Lines","paymentTerms":"Inbound Collect","serviceType":"guaranteed","serviceOption":"12","status":"ok","ref":"5067611","days":2,"time":1417},{"total":445.26,"carrierCode":"upgf","carrier":"UPS Freight","paymentTerms":"Third Party Prepaid","serviceType":"guaranteed","serviceOption":"17","status":"ok","days":2,"time":1675},{"total":531.22,"carrierCode":"upgf","carrier":"UPS Freight","paymentTerms":"Third Party Prepaid","serviceType":"guaranteed","serviceOption":"12","status":"ok","days":2,"time":1675},{"carrierCode":"rdfs","carrier":"Roadrunner Transportation Services","paymentTerms":"Third Party Prepaid","serviceType":"standard","status":"error","error":"There is no standard service from 95403 to 89011","time":1776},{"total":310.97,"carrierCode":"ctii","carrier":"Central Transport","paymentTerms":"Inbound Collect","serviceType":"standard","status":"ok","days":2,"interline":false,"time":2174},{"total":1714.5,"carrierCode":"cenf","carrier":"Central Freight Lines","paymentTerms":"Inbound Collect","serviceType":"standard","status":"ok","ref":"12060485","days":2,"time":2992},{"total":348,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"standard","status":"ok","ref":"37186926","days":3,"time":6415},{"total":363,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"guaranteed","serviceOption":"17","status":"ok","ref":"37186925","days":3,"time":6415},{"total":404.6,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"17","status":"ok","days":2,"time":6415},{"total":854.6,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"17","status":"ok","days":3,"time":6415},{"total":854.6,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"17","status":"ok","days":4,"time":6415},{"total":404.6,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"17","status":"ok","days":5,"time":6415},{"total":404.6,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"17","status":"ok","days":6,"time":6415},{"total":418.75,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"12","status":"ok","days":2,"time":6415},{"total":868.75,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"12","status":"ok","days":3,"time":6415},{"total":868.75,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"12","status":"ok","days":4,"time":6415},{"total":418.75,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"12","status":"ok","days":5,"time":6415},{"total":418.75,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"12","status":"ok","days":6,"time":6415},{"total":432.9,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"0","status":"ok","days":2,"time":6415},{"total":882.9,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"0","status":"ok","days":3,"time":6415},{"total":882.9,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"0","status":"ok","days":4,"time":6416},{"total":432.9,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"0","status":"ok","days":5,"time":6416},{"total":432.9,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"0","status":"ok","days":6,"time":6416}],"originCity":"Santa Rosa","originState":"CA","originCountryCode":"US","destCity":"Henderson","destState":"NV","destCountryCode":"US"}';
 			
+			// saveQuote(exampleData);
 			// setTimeout(function() {
 				renderRates(exampleData);
 			// }, 10000);
@@ -534,18 +573,35 @@ function validation(counter) {
 
 		    return false; // avoid to execute the actual submit of the form.		
 		},
-		// invalidHandler: function() {
-		// 	// 'this' refers to the form
-		// 	var errors = $('#quote').validate().numberOfInvalids();
-		// 	if (errors) {
-		// 		$('h1').after($('<div class="errorTxt"></div>'));
-		// 		$("div.errorTxt").show();
-		// 	} else {
-		// 		$("div.errorTxt").hide();
-		// 	}
-		// },
-		errorElement : 'div',
-    	errorLabelContainer: '.errorTxt'
+		invalidHandler: function() {
+			// 'this' refers to the form
+			var errors = $('#quote').validate().numberOfInvalids();
+			if (errors) {
+				$('h1').after($('<div class="errorTxt"></div>'));
+				$("div.errorTxt").show();
+			} else {
+				$("div.errorTxt").hide();
+			}
+		},
+		highlight: function (element, errorClass, validClass) {
+	        var elem = $(element);
+	        if (elem[0].nodeName == "SELECT") {
+	            $("#s2id_" + elem.attr("id") + " ul").addClass(errorClass);
+	        } else {
+	            elem.addClass(errorClass);
+	        }
+	    },
+
+	    unhighlight: function (element, errorClass, validClass) {
+	        var elem = $(element);
+	        if (elem.nodeName == "SELECT") {
+	            $("#s2id_" + elem.attr("id") + " ul").removeClass(errorClass);
+	        } else {
+	            elem.removeClass(errorClass);
+	        }
+	    }
+		// errorElement : 'div',
+  //   	errorLabelContainer: '.errorTxt'
 	});
 }
 
@@ -631,7 +687,7 @@ function renderRates(data) {
 
 		// append each of the rates to the rates container
 		if(rates[i]['status'] === 'ok') {
-			var $currentRate = $('<div class="rate container-fluid alert alert-info">');
+			var $currentRate = $('<div class="rate container-fluid">');
 			var $carrierName = $('<div class="col-md-4 col-xs-12 carrier-name">');
 			var $serviceType = $('<div class="col-md-4 col-xs-12 service-type">');
 			var $days = $('<div class="col-md-2 col-xs-6 days">');
@@ -669,29 +725,11 @@ function renderRates(data) {
 
 			$days.html('<span class="glyphicon glyphicon-time" aria-hidden="true"></span>' + rates[i]['days'] + ' <span>days</span>');
 			$currentRate.append($days);
-			
+
 			$price.html(
-				'<form method="post" action="/secure/freightAdmin/shipment.cfm">' +
-					'<input type="hidden" name="carrierCode" value="' + rates[i]['carrierCode'] + '"/>' +
-					'<input type="hidden" name="carrierName" value="' + rates[i]['carrier'] + '"/>' +
-					'<input type="hidden" name="total" value="' + rates[i]['total'] + '"/>' +
-					'<input type="hidden" name="paymentTerms" value="' + rates[i]['paymentTerms'] + '"/>' +
-					'<input type="hidden" name="serviceType" value="' + rates[i]['serviceType'] + '"/>' +
-					'<input type="hidden" name="ref" value="' + rates[i]['ref'] + '"/>' +
-					'<input type="hidden" name="days" value="' + rates[i]['days'] + '"/>' +
-					'<input type="hidden" name="time" value="' + rates[i]['time'] + '"/>' +
-					'<input type="hidden" name="serviceOption" value="' + rates[i]['serviceOption'] + '"/>' +
-					'<input type="hidden" name="originAddress" value="' + originAddress + '"/>' +
-					'<input type="hidden" name="originState" value="' + originState + '"/>' +
-					'<input type="hidden" name="originCompany" value="' + originCompany + '"/>' +
-					'<input type="hidden" name="originZipCode" value="' + originZipCode + '"/>' +
-					'<input type="hidden" name="originCity" value="' + originCity + '"/>' +
-					'<input type="hidden" name="test" value="' + JSON.stringify($(".items").serializeArray()) + '"/>' + 
-					// '<input type="hidden" name="destAddress" value="' + destAddress + '"/>' +
-					'<button class="price-btn" type="submit">' +
-						'<span class="glyphicon glyphicon-usd" aria-hidden="true"></span>' + rates[i]['total'].toFixed(2) +
-					'</button>' +
-				'</form>'
+				'<button type="button" class="price-btn" id="btn-rate-' + i + '" data-rate-id="' + i + '">' +
+					'<span class="glyphicon glyphicon-usd" aria-hidden="true"></span>' + rates[i]['total'].toFixed(2) +
+				'</button>'
 			);
 			$currentRate.append($price);
 
@@ -817,7 +855,7 @@ function renderRates(data) {
 	});
 
 	// TODO refactor this shit
-	$('.hidden-rate').click(function(){
+	$('.hidden-rate').click(function() {
 		var carrierCode = $(this).attr('data-code');
 		var $this = $('.show-hidden-rates[data-code=' + carrierCode + ']');
 		var borderBottom = $this.css('border-bottom-width')[0];
@@ -837,11 +875,52 @@ function renderRates(data) {
 	// Click on price button
 	$('.price-btn').click(function(event){
 		event.stopPropagation();
+		
+		var typeOfQuote = $('#quote').attr('data-type');
+		var $this = $(this);
+		var rateId = $this.attr('data-rate-id');
+
+		rates[rateId]['selected'] = true;
+		dataObj['rates'] = rates;
+		dataObj['typeOfQuote'] = typeOfQuote;
+		saveQuote(JSON.stringify(dataObj));
 	});
 
 	// focus on the rates div
 	$('html, body').animate({ scrollTop: $('#rates').offset().top }, 'slow');
+
+	// remove the rates if the state of the form is changed
+	$('#quote').change(function() {
+		$('#rates').remove();
+		$('#rates-error').remove();
+	});
 }
+
+function saveQuote(data) {
+		var formData = JSON.parse(data);
+
+		for(var item = 0; item <= formData['items'].length - 1; item++) {
+			// There is a bug in collectData method
+			if(formData['items'][item]['length'] === 42 && formData['items'][item]['width'] === 42) {
+				formData['items'][item]['package'] = "Pallets_42X42";
+			}
+		}
+
+		formData['itemscount'] = formData['items'].length;
+
+		$.ajax({
+			url: 'getRates.cfc?method=saveQuote',
+			type: 'POST',
+			data: { 'json' : data }
+		})
+		.done(function(data) {
+			var data = JSON.parse(data);
+			document.location = '/secure/freightAdmin/shipment.cfm?quoteId=' + data['quoteId'] + '&quoteType=' + data['quoteType'];
+		})
+		.fail(function() {
+			console.log("error");
+		});
+	}
 
 function collectData() {
 	var items = [];
@@ -894,31 +973,27 @@ function collectData() {
 		charges.push('blind shipment');
 	}
 
-	if( $('select[name=originType]').val() === "business no dock") {
-		if($('input[name=liftgateOrigin]').is(':checked')) {
-			charges.push('liftgate pickup');
-		}
-
-		if($('input[name=insidePickupOrigin]').is(':checked')) {
-			charges.push('inside pickup');
-		}
+	if($('input[name=liftgateOrigin]').is(':checked')) {
+		charges.push('liftgate pickup');
 	}
 
-	if($('select[name=destType]').val() === "business no dock") {
-		if($('input[name=liftgateDest]').is(':checked')) {
-			charges.push('liftgate delivery');
-		}
+	if($('input[name=insidePickupOrigin]').is(':checked')) {
+		charges.push('inside pickup');
+	}
 
-		if($('input[name=insideDelivery]').is(':checked')) {
-			charges.push('inside delivery');
-		}
+	if($('input[name=liftgateDest]').is(':checked')) {
+		charges.push('liftgate delivery');
+	}
+
+	if($('input[name=insideDelivery]').is(':checked')) {
+		charges.push('inside delivery');
 	}
 
 	var result = {
 		pickupDate : $('input[name=pickUpDate]').val(),
 		originPostalCode : $('*[name=shipFrom]').val(),
 		destPostalCode : $('*[name=shipTo]').val(),
-		origintType : $('select[name=originType]').val(),
+		originType : $('select[name=originType]').val(),
 		destType : $('select[name=destType]').val(),
 		items : items
 	};
@@ -984,3 +1059,441 @@ function timeConvert (time) {
 function cFirst(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
+// SHIPMENT FORM
+var lastValidItem = 1;
+function shipmentFormValidation(counter) {
+	// default value for the counter is 1
+	counter = typeof counter !== 'undefined' ? counter : 1;
+
+	var rulesObject = {};
+	
+	rulesObject['pickup-company'] = {
+		required: true,
+		minlength: 3,
+	};
+
+	rulesObject['pickup-street-address'] = {
+		required: true,
+		minlength: 3,
+	};
+
+	rulesObject['pickup-city-state-zip'] = {
+		required: true,
+	};
+
+	rulesObject['pickup-location-type'] = {
+		required: true,
+	};
+
+	rulesObject['pickup-contact-name'] = {
+		required: true,
+		minlength: 2
+	};
+
+	rulesObject['pickup-contact-phone'] = {
+		required: true,
+		minlength: 3
+	};
+
+	rulesObject['delivery-company'] = {
+		required: true,
+		minlength: 3
+	};
+
+	rulesObject['delivery-street-address'] = {
+		required: true,
+		minlength: 3
+	};
+
+	rulesObject['delivery-contact-name'] = {
+		required: true,
+		minlength: 2
+	};
+
+	rulesObject['delivery-contact-phone'] = {
+		required: true,
+		minlength: 3
+	};
+
+	rulesObject['delivery-city-state-zip'] = {
+		required: true
+	};
+
+	rulesObject['delivery-location-type'] = {
+		required: true
+	};
+
+	rulesObject['description-item-' + counter] = {
+		required: true,
+		minlength: 5,
+	};
+
+	rulesObject['quantity-item-' + counter] = {
+		required: true,
+		min: 1,
+	};
+
+	rulesObject['weight-item-' + counter] = {
+		required: true,
+		min: 1,
+	};
+
+	rulesObject['length-item-' + counter] = {
+		required: true,
+		min: 1,
+	};
+
+	rulesObject['width-item-' + counter] = {
+		required: true,
+		min: 1,
+	};
+
+	rulesObject['height-item-' + counter] = {
+		required: true,
+		min: 1,
+	};
+
+	for(prop in rulesObject) {
+		if(counter !== lastValidItem) {
+			$('#' + prop).rules("add", rulesObject[prop]);
+		}
+	}
+
+	lastValidItem = counter;
+
+	$('#shipment-form').validate({
+		rules: rulesObject
+	});
+}
+
+// connect packaging with width, length and height
+$(document).ready(function(){
+	var $shipmentItems = $('#shipment-items').children();
+
+	$shipmentItems.each(function(index) {
+		var counter = index + 1;
+
+	    $('#length-item-' + counter).change(function() {
+	    	changePackaging(counter);
+	    	fillItemInfonDiv(counter);
+	    });
+
+	    $('#width-item-' + counter).change(function() {
+	    	changePackaging(counter);
+	    	fillItemInfonDiv(counter);
+	    });
+
+	    fillLengthWidtAndHeight(counter);
+	    $('#package-item-' + counter).change(function() {
+	    	fillLengthWidtAndHeight(counter);
+	    	fillItemInfonDiv(counter);
+	    });
+
+	    $('#height-item-' + counter).change(function() {
+	    	fillItemInfonDiv(counter);
+	    });
+
+		$('#quantity-item-' + counter).change(function() {
+	    	fillItemInfonDiv(counter);
+	    });
+
+		$('#freight-class-item-' + counter).change(function() {
+	    	fillItemInfonDiv(counter);
+	    });
+
+		$('#weight-item-' + counter).change(function() {
+	    	fillItemInfonDiv(counter);
+	    });
+
+	    $('#weight-unit-item-' + counter).change(function() {
+	    	fillItemInfonDiv(counter);
+	    });
+
+	    shipmentFormValidation(counter);
+	});
+});
+
+// popover
+$(function () {
+	$('[data-toggle="popover"]').popover({ trigger: 'hover' });
+});
+
+// edit address
+$('.edit-address').each(function(){
+	var $this = $(this);
+
+	$this.click(function(){
+		$('.popover').remove();
+		$this.next('.hidden').removeClass('hidden');
+		$this.remove();
+	});
+});
+
+// toggle send copy of bill of landing
+$('#delivery-send-copy-option').click(function() {
+	$('#delivery-send-copy').toggle();
+});
+
+$('#pickup-send-copy-option').click(function(){
+	$('#pickup-send-copy').toggle();
+})
+
+// edit item
+$('.edit-item-btn').each(function(){
+	var $this = $(this);
+
+	$this.click(function() {
+		var number = $(this).attr('data-item-number');
+		$('#shipment-item-' + number).find('.item-details').removeClass('hidden');
+	});
+});
+
+// fill the information div in the item's container with values of the inputs
+function fillItemInfonDiv(index) {
+	var $dimensionsInfo = $('#shipment-item-' + index + ' .shipment-item-info .info-span-dimensions span.value');
+	var $quantityInfo = $('#shipment-item-' + index + ' .shipment-item-info .info-span-quantity span.value');
+	var $freightClassInfo = $('#shipment-item-' + index + ' .shipment-item-info .info-span-freight-class span.value');
+	var $weightInfo = $('#shipment-item-' + index + ' .shipment-item-info .info-span-weight span.value');
+	var $weightUnitInfo = $('#shipment-item-' + index + ' .shipment-item-info .info-span-weight-unit');
+
+	var $length = $('#length-item-' + index);
+	var $width = $('#width-item-' + index);
+	var $height = $('#height-item-' + index);
+	var $quantity = $('#quantity-item-' + index);
+	var $freightClass = $('#freight-class-item-' + index);
+	var $weight = $('#weight-item-' + index);
+	var $weightUnit = $('#weight-unit-item-' + index);
+
+	$dimensionsInfo.text($length.val() + ' x ' + $width.val() + ' x ' + $height.val());
+	$quantityInfo.text($quantity.val());
+	$freightClassInfo.text($freightClass.val());
+	$weightInfo.text($weight.val());
+	$weightUnitInfo.text($weightUnit.val());
+}
+
+// add shipment item
+$('#add-shipment-item').click(addShipmentItem);
+
+function addShipmentItem() {
+	// hide the item details of the other items	
+	$('.item-details').each(function(){
+		$(this).addClass('hidden');
+	});
+
+	var index = $('#shipment-items').children().length + 1;
+	var template = 
+		'<div class="row">' +
+			'<button type="button" id="edit-item-' + index + '" data-item-number="' + index + '" class="col-md-1 edit-item-btn"  data-toggle="popover" data-trigger="hover" data-placement="bottom" title="Warning" data-content="Changing this may affect price of the shipment!">Edit</button>' +
+			'<div class="col-md-11 shipment-item-info">' +
+				'<span class="info-span info-span-quantity">' +
+					'<span class="value">' +
+					'</span> Pallets ' +
+				'</span>' +
+				'<span class="info-span info-span-dimensions">Dimensions ' +
+					'<span class="value">' +
+					'</span> ' +
+				'</span>' +
+				'<span class="info-span info-span-freight-class">Freight class ' +
+					'<span class="value">' +
+					'</span>' +
+				'</span>' +
+				'<span class="info-span info-span-weight">Total weight ' +
+					'<span class="value">' +
+					'</span> ' +
+					'<span class="info-span-weight-unit">lbs</span>' +
+				'</span>' +
+			'</div>' +
+		'</div>' +
+		'<div class="row item-second-row">' +
+			'<div class="col-md-1 item-number-container">' +
+				'<span>Item ' + index + '</span>' +
+			'</div>' +
+			'<div class="col-md-11 item-data-container">' +
+				'<div class="row">' +
+					'<div class="form-group col-md-3">' +
+						'<label for="package-item-' + index + '">Packaging</label>' +
+						'<select class="form-control" name="package-item-' + index + '" id="package-item-' + index + '" required>' +
+						'</select>' +
+					'</div>' +
+					'<div class="form-group col-md-3">' +
+						'<label for="description-item-' + index + '">Description</label>' +
+						'<input type="text" id="description-item-' + index + '" class="form-control" name="description-item-' + index + '">' +
+					'</div>' +
+					'<div class="form-group col-md-3">' +
+						'<label for="nmfc-item-' + index + '">NMFC Item #</label>' +
+						'<input type="text" id="nmfc-item-' + index + '" class="form-control" name="nmfc-item-' + index + '">' +
+					'</div>' +
+					'<div class="form-group col-md-3">' +
+						'<label for="said-to-contain">Said to contain</label>' +
+						'<input type="text" id="said-to-contain" class="form-control" name="said-to-contain">' +
+					'</div>' +
+				'</div>' +
+				'<div class="item-details">' +
+					'<div class="row">' +
+						'<div class="form-group col-md-1">' +
+							'<label for="quantity-item-' + index + '">Quantity</label>' +
+							'<input class="form-control calculation item-input" type="number" name="quantity-item-' + index + '" id="quantity-item-' + index + '" value="1" required/>' +
+						'</div>' +
+						'<div class="form-group col-md-2">' +
+							'<label for="weight-item-' + index + '">Weight</label>' +
+							'<input class="form-control calculation item-input" type="number" name="weight-item-' + index + '" id="weight-item-' + index + '" required/>' +
+						'</div>' +
+						'<div class="form-group col-md-2">' +
+							'<label for="weight-unit-item-' + index + '">Lbs/Kg</label>' +
+							'<select class="form-control" name="weightUnit-item-' + index + '" id="weight-unit-item-' + index + '">' +
+								'<option value="lbs" selected="selected">Lbs</option>' +
+								'<option value="kg">Kg</option>' +
+							'</select>' +
+						'</div>' +
+						'<div class="form-group col-md-2">' +
+							'<label for="length-item-' + index + '">Length</label>' +
+							'<input class="form-control calculation item-input" type="number" name="length-item-' + index + '" id="length-item-' + index + '" required>' +
+						'</div>' +
+						'<div class="form-group col-md-2">' +
+							'<label for="width-item-' + index + '">Width</label>' +
+							'<input class="form-control calculation item-input" type="number" name="width-item-' + index + '" id="width-item-' + index + '" required>' +
+						'</div>' +
+						'<div class="form-group col-md-2">' +
+							'<label for="height-item-' + index + '">Height</label>' +
+							'<input class="form-control calculation item-input" type="number" name="height-item-' + index + '" id="height-item-' + index + '" required>' +
+						'</div>' +
+						'<div class="form-group col-md-1">' +
+							'<label for="length-unit-item-' + index + '">In/Cm</label>' +
+							'<select class="form-control" name="lengthUnit-item-' + index + '" id="length-unit-item-' + index + '">' +
+								'<option value="in" selected="selected">In</option>' +
+								'<option value="cm">Cm</option>' +
+							'</select>' +
+						'</div>' +
+					'</div>' +
+					'<div class="row">' +										
+						'<div class="form-group col-md-2">' +
+							'<label for="freight-class-item-' + index + '">Freight class</label>' +
+							'<select class="form-control" name="freightClass-item-' + index + '" id="freight-class-item-' + index + '">' +
+							'</select>' +
+						'</div>' +
+						'<div class="form-group col-md-2">' +
+							'<label>Hazmat?</label>' +
+							'<div>' +
+								'<input type="radio" name="hazmat-item-' + index + '" id="yes-item-' + index + '" value="true"> ' +
+								'<label for="yes-item-' + index + '">Yes</label> ' +
+								'<input type="radio" name="hazmat-item-' + index + '" id="no-item-' + index + '" value="false" checked="checked"> ' +
+								'<label for="no-item-' + index + '">No</label>' +
+							'</div>' +
+						'</div>' +
+					'</div>' +
+				'</div>' +
+			'</div>' +
+		'</div>';
+
+	var $newItem = $('<div id="shipment-item-' + index + '" class="shipment-item container-fluid">');
+
+	$newItem.html(template);
+	$newItem.appendTo('#shipment-items');
+
+	// edit item
+	$('.edit-item-btn').each(function(){
+		var $this = $(this);
+
+		$this.click(function() {
+			var number = $(this).attr('data-item-number');
+			$('#shipment-item-' + number).find('.item-details').removeClass('hidden');
+		});
+	});
+
+	// fill freight class select with options
+	$.ajax({
+		url: '/secure/freightadmin/models/item.cfc?method=getFreightClassesRemote',
+		type: 'get',
+	})
+	.done(function(data) {
+		var data = JSON.parse(data);
+		for(var i = 0; i <= data.length - 1; i++) {
+			var $option = $('<option value="' + data[i]['value'] + '">' + data[i]['name'] + '</option>');
+			$option.appendTo('#freight-class-item-' + index);
+		}
+
+		$('#freight-class-item-' + index).select2({
+			width: "100%"
+		});
+	});
+
+	// fill packaging select with options
+	$.ajax({
+		url: '/secure/freightadmin/models/item.cfc?method=getPackageTypesRemote',
+		type: 'get',
+	})
+	.done(function(data) {
+		var data = JSON.parse(data);
+		for(var i = 0; i <= data.length - 1; i++) {
+			var $option = $('<option value="' + data[i]['value'] + '">' + data[i]['name'] + '</option>');
+			$option.appendTo('#package-item-' + index);
+		}
+
+		$('#package-item-' + index).select2({
+			width: "100%"
+		});
+
+		// Default values of length width and height
+		fillLengthWidtAndHeight(index);
+	    $('#package-item-' + index).change(function() {
+	    	fillLengthWidtAndHeight(index);
+	    });
+	});
+
+	// select2
+	$('#shipment-item-' + index + ' select').select2();
+
+	// popover
+	$('[data-toggle="popover"]').popover({ trigger: 'hover' });
+
+	// Change packaging on length/width change
+    $('#length-item-' + index).change(function() {
+    	changePackaging(index);
+    });
+
+    $('#width-item-' + index).change(function() {
+    	changePackaging(index);
+    });
+
+    // add validation rules
+   	shipmentFormValidation(index);
+
+   	// item-info div values
+   	// REFACTOR this!!!
+   	$('#length-item-' + index).change(function() {
+    	fillItemInfonDiv(index);
+    });
+
+    $('#width-item-' + index).change(function() {    	
+    	fillItemInfonDiv(index);
+    });
+
+    $('#package-item-' + index).change(function() {
+    	fillItemInfonDiv(index);
+    });
+
+    $('#height-item-' + index).change(function() {
+    	fillItemInfonDiv(index);
+    });
+
+	$('#quantity-item-' + index).change(function() {
+    	fillItemInfonDiv(index);
+    });
+
+	$('#freight-class-item-' + index).change(function() {
+    	fillItemInfonDiv(index);
+    });
+
+	$('#weight-item-' + index).change(function() {
+    	fillItemInfonDiv(index);
+    });
+
+	$('#weight-unit-item-' + index).change(function() {
+    	fillItemInfonDiv(index);
+    });
+
+   	fillItemInfonDiv(index);
+}
+
+
