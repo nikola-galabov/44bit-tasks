@@ -6,9 +6,99 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Untitled</title>
         <link rel="author" href="humans.txt">
+
+        <style type="text/css">
+            .getRates .rate {
+    margin: 9px 0 10px 0;
+    padding: 10px;
+    background-color: #F2F2F2;
+    border: 1px solid #e3e3e3;
+    font-size: 18px;
+    color: black;
+    font-weight: bold;
+}
+
+.getRates .rate .carrier-name, .getRates .rate .service-type {
+    display: inline-block;
+    margin-right: 3%;
+}
+
+.getRates .rate .carrier-name {
+    width: 40%;
+}
+
+.getRates .rate .service-type {
+    width: 30%;
+}
+
+.getRates .rate .days, .getRates .rate .price {
+    display: inline-block;
+    width: 10%;
+    margin-right: 3%;
+}
+
+.getRates .rate .price {
+    margin-right: 0;
+}
+
+.getRates .price-btn {
+    padding: 10px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+#featured-rates{
+    width: 75%;
+    display: inline-block;
+}
+
+#fastest-delivery {
+    width: 24.7%;
+    display: inline-block;
+    padding-left: 0.3%;
+}
+
+#fastest-delivery .rate {
+    font-size: 14px;
+    font-weight: normal;    
+}
+
+.getRates #featured-rates .rate {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: normal;
+    margin-right: 0.5%;
+    width: 33%;
+    box-sizing: border-box;
+}
+
+.getRates #featured-rates .rate:last-of-type {
+    margin-right: 0;
+}
+
+#featured-rates .price-btn, #fastest-delivery .price-btn {
+    width: 100%;
+}
+
+.getRates #featured-rates .rate .carrier-name, .getRates #fastest-delivery .rate .carrier-name {
+    display: block;
+    width: 100%
+}
+
+.getRates #featured-rates .rate .service-type, .getRates #fastest-delivery .rate .service-type {
+    display: block;
+    width: 100%
+}
+
+.getRates #featured-rates .rate .days, .getRates #featured-rates .rate .price, .getRates #fastest-delivery .rate .days, .getRates #fastest-delivery .rate .price {
+    display: inline-block;
+    width: 49%;
+    margin: 0.5%;
+}
+        </style>
     </head>
     <body>
-        <div id="innerwrapper"></div>
+        <div class="getRates"></div>
         <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
         <script>
         var data = '{"pickupDate":"2015-07-21","originPostalCode":"79703","destPostalCode":"21704","originType":"business no dock","destType":"business dock","items":[{"weight":200,"freightClass":55,"length":42,"width":42,"height":48,"pieces":1,"hazardous":false,"package":"Pallets_other"},{"weight":2000,"freightClass":55,"length":42,"width":42,"height":48,"package":"Pallets_other","pieces": 3,"hazardous":false}],"charges":["liftgate pickup"],"rates":[{"carrierCode":"wtva","carrier":"Wilson Trucking","paymentTerms":"Outbound Prepaid","status":"error","error":"Unable to quote jointline rates.  Please call the Wilson Trucking Corporation General Office at 1-540-949-3200 for a rate quote.  Thank you."},{"total":189.31,"carrierCode":"odfl","carrier":"Old Dominion Freight Line","paymentTerms":"Third Party Prepaid","serviceType":"standard","status":"ok","ref":"41239330","days":4,"interline":false,"time":990},{"total":236.71,"carrierCode":"odfl","carrier":"Old Dominion Freight Line","paymentTerms":"Third Party Prepaid","serviceType":"guaranteed","status":"ok","ref":"41239330","days":4,"interline":false,"time":990},{"total":141.27,"carrierCode":"rlca","carrier":"R+L Carriers","paymentTerms":"Outbound Prepaid","serviceType":"standard","status":"ok","ref":"15802002","days":4,"time":1019},{"total":176.27,"carrierCode":"rlca","carrier":"R+L Carriers","paymentTerms":"Outbound Prepaid","serviceType":"guaranteed","serviceOption":"17","status":"ok","ref":"15802002","days":4,"time":1019},{"total":211.27,"carrierCode":"rlca","carrier":"R+L Carriers","paymentTerms":"Outbound Prepaid","serviceType":"guaranteed","serviceOption":"17","status":"ok","ref":"15802002","days":4,"time":1019},{"total":231.27,"carrierCode":"rlca","carrier":"R+L Carriers","paymentTerms":"Outbound Prepaid","serviceType":"guaranteed","serviceOption":"17","status":"ok","ref":"15802002","days":4,"time":1019},{"total":515.87,"carrierCode":"abfs","carrier":"ABF Freight System","paymentTerms":"Outbound Prepaid","serviceType":"standard","status":"ok","ref":"BCY1982025","days":4,"interline":false,"time":1228},{"total":623.49,"carrierCode":"abfs","carrier":"ABF Freight System","paymentTerms":"Outbound Prepaid","serviceType":"guaranteed","serviceOption":"17","status":"ok","ref":"BCY1982025","days":3,"interline":false,"time":1228},{"total":617.05,"carrierCode":"abfs","carrier":"ABF Freight System","paymentTerms":"Outbound Prepaid","serviceType":"guaranteed","serviceOption":"12","status":"ok","ref":"BCY1982025","days":6,"interline":false,"time":1228},{"total":575.28,"carrierCode":"abfs","carrier":"ABF Freight System","paymentTerms":"Outbound Prepaid","serviceType":"guaranteed","serviceOption":"17","status":"ok","ref":"BCY1982025","days":6,"interline":false,"time":1228},{"total":290.84,"carrierCode":"exla","carrier":"Estes Express Lines","paymentTerms":"Third Party Prepaid","serviceType":"standard","status":"ok","ref":"5260258","days":4,"time":1598},{"total":205.29,"carrierCode":"upgf","carrier":"UPS Freight","paymentTerms":"Third Party Prepaid","serviceType":"guaranteed","serviceOption":"17","status":"ok","days":4,"time":1894},{"total":251.08,"carrierCode":"ctii","carrier":"Central Transport","paymentTerms":"Outbound Prepaid","serviceType":"standard","status":"ok","days":4,"interline":false,"time":2188},{"total":210.86,"carrierCode":"rdfs","carrier":"Roadrunner Transportation Services","paymentTerms":"Outbound Prepaid","serviceType":"standard","status":"ok","ref":"9414760","days":6,"time":3741},{"total":417.6,"carrierCode":"pyle","carrier":"A Duie Pyle","paymentTerms":"Third Party Prepaid","serviceType":"standard","status":"ok","ref":"2015072182","days":4,"time":6741},{"total":210,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"standard","status":"ok","ref":"37687195","days":4,"time":16252},{"total":225,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"guaranteed","serviceOption":"17","status":"ok","ref":"37687196","days":4,"time":16252},{"total":255,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"17","status":"ok","days":3,"time":16252},{"total":705,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"17","status":"ok","days":4,"time":16252},{"total":705,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"17","status":"ok","days":5,"time":16252},{"total":255,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"17","status":"ok","days":6,"time":16253},{"total":255,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"17","status":"ok","days":7,"time":16253},{"total":260,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"12","status":"ok","days":3,"time":16253},{"total":710,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"12","status":"ok","days":4,"time":16253},{"total":710,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"12","status":"ok","days":5,"time":16253},{"total":260,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"12","status":"ok","days":6,"time":16253},{"total":260,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"12","status":"ok","days":7,"time":16253},{"total":265,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"0","status":"ok","days":3,"time":16253},{"total":715,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"0","status":"ok","days":4,"time":16253},{"total":715,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"0","status":"ok","days":5,"time":16253},{"total":265,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"0","status":"ok","days":6,"time":16253},{"total":265,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"0","status":"ok","days":7,"time":16253}],"originCity":"Frederick","originState":"MD","originCountryCode":"US","destCity":"Midland","destState":"TX","destCountryCode":"US"}';
@@ -119,7 +209,7 @@ function renderRates(data) {
     // this object will be filled with the cheapest offer from each carrier
     var displayedCarriers = {};
 
-    $('#innerwrapper').append($ratesContainer);
+    $('.getRates').append($ratesContainer);
     for (var i = 0; i <= rates.length - 1; i++) {
 
         // append each of the rates to the rates container
@@ -232,11 +322,11 @@ function renderRates(data) {
         }
 
         var $thisCloned = $(this).clone();
-        var $featuredWrapper = $('<div class="col-md-4">');
+        // var $featuredWrapper = $('<div class="col-md-4">');
         $thisCloned.removeClass();
-        $thisCloned.addClass('rate container-fluid no-padding');
-        $featuredWrapper.append($thisCloned);
-        $featuredWrapper.appendTo('#featured-rates');
+        $thisCloned.addClass('rate');
+        // $featuredWrapper.append($thisCloned);
+        $thisCloned.appendTo('#featured-rates');
 
         var $carrier = $thisCloned.find('.carrier-name');
         $carrier.removeClass('col-md-4');
