@@ -1,0 +1,337 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Untitled</title>
+        <link rel="author" href="humans.txt">
+    </head>
+    <body>
+        <div id="innerwrapper"></div>
+        <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+        <script>
+        var data = '{"pickupDate":"2015-07-21","originPostalCode":"79703","destPostalCode":"21704","originType":"business no dock","destType":"business dock","items":[{"weight":200,"freightClass":55,"length":42,"width":42,"height":48,"pieces":1,"hazardous":false,"package":"Pallets_other"},{"weight":2000,"freightClass":55,"length":42,"width":42,"height":48,"package":"Pallets_other","pieces": 3,"hazardous":false}],"charges":["liftgate pickup"],"rates":[{"carrierCode":"wtva","carrier":"Wilson Trucking","paymentTerms":"Outbound Prepaid","status":"error","error":"Unable to quote jointline rates.  Please call the Wilson Trucking Corporation General Office at 1-540-949-3200 for a rate quote.  Thank you."},{"total":189.31,"carrierCode":"odfl","carrier":"Old Dominion Freight Line","paymentTerms":"Third Party Prepaid","serviceType":"standard","status":"ok","ref":"41239330","days":4,"interline":false,"time":990},{"total":236.71,"carrierCode":"odfl","carrier":"Old Dominion Freight Line","paymentTerms":"Third Party Prepaid","serviceType":"guaranteed","status":"ok","ref":"41239330","days":4,"interline":false,"time":990},{"total":141.27,"carrierCode":"rlca","carrier":"R+L Carriers","paymentTerms":"Outbound Prepaid","serviceType":"standard","status":"ok","ref":"15802002","days":4,"time":1019},{"total":176.27,"carrierCode":"rlca","carrier":"R+L Carriers","paymentTerms":"Outbound Prepaid","serviceType":"guaranteed","serviceOption":"17","status":"ok","ref":"15802002","days":4,"time":1019},{"total":211.27,"carrierCode":"rlca","carrier":"R+L Carriers","paymentTerms":"Outbound Prepaid","serviceType":"guaranteed","serviceOption":"17","status":"ok","ref":"15802002","days":4,"time":1019},{"total":231.27,"carrierCode":"rlca","carrier":"R+L Carriers","paymentTerms":"Outbound Prepaid","serviceType":"guaranteed","serviceOption":"17","status":"ok","ref":"15802002","days":4,"time":1019},{"total":515.87,"carrierCode":"abfs","carrier":"ABF Freight System","paymentTerms":"Outbound Prepaid","serviceType":"standard","status":"ok","ref":"BCY1982025","days":4,"interline":false,"time":1228},{"total":623.49,"carrierCode":"abfs","carrier":"ABF Freight System","paymentTerms":"Outbound Prepaid","serviceType":"guaranteed","serviceOption":"17","status":"ok","ref":"BCY1982025","days":3,"interline":false,"time":1228},{"total":617.05,"carrierCode":"abfs","carrier":"ABF Freight System","paymentTerms":"Outbound Prepaid","serviceType":"guaranteed","serviceOption":"12","status":"ok","ref":"BCY1982025","days":6,"interline":false,"time":1228},{"total":575.28,"carrierCode":"abfs","carrier":"ABF Freight System","paymentTerms":"Outbound Prepaid","serviceType":"guaranteed","serviceOption":"17","status":"ok","ref":"BCY1982025","days":6,"interline":false,"time":1228},{"total":290.84,"carrierCode":"exla","carrier":"Estes Express Lines","paymentTerms":"Third Party Prepaid","serviceType":"standard","status":"ok","ref":"5260258","days":4,"time":1598},{"total":205.29,"carrierCode":"upgf","carrier":"UPS Freight","paymentTerms":"Third Party Prepaid","serviceType":"guaranteed","serviceOption":"17","status":"ok","days":4,"time":1894},{"total":251.08,"carrierCode":"ctii","carrier":"Central Transport","paymentTerms":"Outbound Prepaid","serviceType":"standard","status":"ok","days":4,"interline":false,"time":2188},{"total":210.86,"carrierCode":"rdfs","carrier":"Roadrunner Transportation Services","paymentTerms":"Outbound Prepaid","serviceType":"standard","status":"ok","ref":"9414760","days":6,"time":3741},{"total":417.6,"carrierCode":"pyle","carrier":"A Duie Pyle","paymentTerms":"Third Party Prepaid","serviceType":"standard","status":"ok","ref":"2015072182","days":4,"time":6741},{"total":210,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"standard","status":"ok","ref":"37687195","days":4,"time":16252},{"total":225,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"guaranteed","serviceOption":"17","status":"ok","ref":"37687196","days":4,"time":16252},{"total":255,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"17","status":"ok","days":3,"time":16252},{"total":705,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"17","status":"ok","days":4,"time":16252},{"total":705,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"17","status":"ok","days":5,"time":16252},{"total":255,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"17","status":"ok","days":6,"time":16253},{"total":255,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"17","status":"ok","days":7,"time":16253},{"total":260,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"12","status":"ok","days":3,"time":16253},{"total":710,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"12","status":"ok","days":4,"time":16253},{"total":710,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"12","status":"ok","days":5,"time":16253},{"total":260,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"12","status":"ok","days":6,"time":16253},{"total":260,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"12","status":"ok","days":7,"time":16253},{"total":265,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"0","status":"ok","days":3,"time":16253},{"total":715,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"0","status":"ok","days":4,"time":16253},{"total":715,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"0","status":"ok","days":5,"time":16253},{"total":265,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"0","status":"ok","days":6,"time":16253},{"total":265,"carrierCode":"rdwy","carrier":"YRC Freight","paymentTerms":"Third Party Prepaid","serviceType":"expedited","serviceOption":"0","status":"ok","days":7,"time":16253}],"originCity":"Frederick","originState":"MD","originCountryCode":"US","destCity":"Midland","destState":"TX","destCountryCode":"US"}';
+
+        renderRates(data);
+        function getDate(days) {
+	var date = new Date();
+	var numberOfDaysToAdd = parseInt(days);
+	var dd;
+	var mm;
+	var result;
+	var monthNames = ["Jan", "Febr", "March", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
+
+	date.setDate(date.getDate() + numberOfDaysToAdd);
+	dd = date.getDate();
+	mm = date.getMonth();
+	result = monthNames[mm] + ' ' + dd;
+
+	return result;
+}
+ 
+function cFirst(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function timeConvert (time) {
+	var time = parseInt(time);
+	var h = time % 12 || 12;
+	var ampm = time < 12 ? "AM" : "PM";
+	var	timeString = h + ampm;
+
+	return timeString;
+}
+
+function renderRates(data) {
+    var dataObj = JSON.parse(data);
+    var rates = dataObj['rates'];
+    var $ratesContainer = $('<div id="rates">');
+    var $ratesHeader = $('<div id="rates-header" class="container-fluid no-padding">');
+    var $errorsContainer = $('<div id="rates-error" class="container-fluid">');
+    var $errorHeader = $('<div class="error-header">');
+    var $showErrorsBtn = $('<button class="btn btn-warning" id="show-error-cariers">');
+    var numberOfErrors = 0;
+    var lowest = Number.POSITIVE_INFINITY;
+    var fastestDelivery = {};
+
+    // remove loading image and enable the submit button
+    $('#loading-image').remove();
+    $('input[type=submit]').removeAttr('disabled');
+
+    // error container
+    $errorHeader.html('<span id="number-of-errors"></span> carriers did not return rates');
+    $errorsContainer.append($errorHeader);
+    $showErrorsBtn.text('Show carriers');
+    $showErrorsBtn.appendTo($errorsContainer);
+
+    // rates container
+    $ratesHeader.html(
+        '<div id="featured-rates" class="col-md-9 no-padding">' +
+            '<h2>Featured rates</h2>' +
+        '</div>' +
+        '<div id="fastest-delivery" class="col-md-3">' +
+            '<h2>Fastest delivery</h2>' +
+        '</div>'
+    );
+
+    $ratesContainer.append($ratesHeader);
+
+    // sort the rates by price and date
+    rates.sort(function(a,b){
+        // if the price is undefined(status is not "ok")
+        if(! a.total) {
+            return -1;
+        }
+
+        if(! b.total) {
+            return 1;
+        }
+
+        if(a.total < b.total) {
+            return -1;
+        }
+
+        if(a.total > b.total) {
+            return 1;
+        }
+        // if the price are equal sort by days
+        if(a.total == b.total) {
+            if(a.days < b.days) {
+                return -1;
+            }
+
+            if(a.days > b.days) {
+                return 1;
+            }
+
+            return 0;
+        }
+    });
+
+    for (var i = 0; i <= rates.length - 1; i++) {
+        if (rates[i].days < lowest) { 
+            lowest = rates[i].days;
+            fastestDelivery = rates[i];
+        }
+    }
+    
+    // this object will be filled with the cheapest offer from each carrier
+    var displayedCarriers = {};
+
+    $('#innerwrapper').append($ratesContainer);
+    for (var i = 0; i <= rates.length - 1; i++) {
+
+        // append each of the rates to the rates container
+        if(rates[i]['status'] === 'ok') {
+            var $currentRate = $('<div class="rate container-fluid">');
+            var $carrierName = $('<div class="col-md-4 col-xs-12 carrier-name">');
+            var $serviceType = $('<div class="col-md-4 col-xs-12 service-type">');
+            var $days = $('<div class="col-md-2 col-xs-6 days">');
+            var $price = $('<div class="col-md-2 col-xs-6 price">');
+            var $serviceOption = $('<span class="service-option">');
+            var originAddress = $('select[name=shipFrom] option:selected').attr('data-address');
+            var originState = $('select[name=shipFrom] option:selected').attr('data-state');
+            var originCompany = $('select[name=shipFrom] option:selected').attr('data-company');
+            var originCity = $('select[name=shipFrom] option:selected').attr('data-city');
+            var originZipCode = $('select[name=shipFrom]').val();
+
+            $carrierName.text(rates[i]['carrier']);
+            $currentRate.append($carrierName);
+
+            // Text of the service type
+            if(rates[i]['serviceType'] === 'standard' || rates[i]['serviceType'] === 'guaranteed') {
+                $serviceType.text(cFirst(rates[i]['serviceType']));
+                
+                if(rates[i]['serviceOption']) {
+                    $serviceOption.text(timeConvert(rates[i]['serviceOption']));
+                    $serviceOption.appendTo($serviceType);
+                }
+            } else {
+                if(rates[i]['serviceOption'] !== "0") {
+                    $serviceType.text('Time Critical by ' + timeConvert(rates[i]['serviceOption']));
+                } else {
+                    $serviceType.text('Time Critical Hour Window');
+                }
+
+                $serviceOption.text(getDate(rates[i]['days']));
+                $serviceOption.appendTo($serviceType);
+            }
+
+            $currentRate.append($serviceType);
+
+            $days.html('<span class="glyphicon glyphicon-time" aria-hidden="true"></span>' + rates[i]['days'] + ' <span>days</span>');
+            $currentRate.append($days);
+
+            $price.html(
+                '<button type="button" class="price-btn" id="btn-rate-' + i + '" data-rate-id="' + i + '">' +
+                    '<span class="glyphicon glyphicon-usd" aria-hidden="true"></span>' + rates[i]['total'].toFixed(2) +
+                '</button>'
+            );
+            $currentRate.append($price);
+
+            $currentRate.attr('data-code', rates[i]['carrierCode']);
+            
+            // if there is already a rate from a carrier, displayed in the the html, the other rates from this carrier will be hidden
+            if(displayedCarriers.hasOwnProperty(rates[i]['carrier'])) {
+                $currentRate.addClass('hidden-rate');
+                $('*[data-code=' + rates[i]['carrierCode'] + ']').last().after($currentRate);
+                $currentRate.css('display', 'none');
+                var $firstOfType = $('*[data-code=' + rates[i]['carrierCode'] + ']').first();
+                $firstOfType.addClass('show-hidden-rates');
+                var $serviceDiv = $firstOfType.find('.service-type');
+                if($serviceDiv.find('.glyphicon-download').length == 0) {
+                    $serviceDiv.html($serviceDiv.html() + '<span class="glyphicon glyphicon-download"></span>');
+                }
+            } else {
+                displayedCarriers[rates[i]['carrier']] = 1;
+                $currentRate.appendTo($ratesContainer);
+            }
+
+        } else {
+            // append errors to the errors container
+            var $currentError = $('<div class="rate-error container-fluid alert alert-warning">');
+            var $carrierName = $('<div class="col-md-3 error-carrier">');
+            var $errorMessage = $('<div class="col-md-9 error-message">');
+            
+            numberOfErrors++;
+            $carrierName.text(rates[i]['carrier']);
+            $currentError.append($carrierName);
+
+            $errorMessage.text(rates[i]['error']);
+            $currentError.append($errorMessage);
+
+            $currentError.appendTo($errorsContainer);
+        }
+    }
+
+    // if there is an errors, the error container will be appended to the content
+    if(numberOfErrors > 0) {
+        $('.container').append($errorsContainer);
+        $('#number-of-errors').text(numberOfErrors);
+
+        // toggle the errors on button click
+        $showErrorsBtn.click(function(){
+            var $statusErrors = $('.rate-error');
+            var display = $statusErrors.css('display');
+
+            if(display === 'none') {
+                $(this).text('Hide carriers');
+            } else {
+                $(this).text('Show carriers');
+            }
+
+            $statusErrors.toggle();
+        });
+    }
+
+    // get the featured rates
+    $('.rate:not(.hidden-rate)').each(function(index) {
+        if(index > 2) {
+            return;
+        }
+
+        var $thisCloned = $(this).clone();
+        var $featuredWrapper = $('<div class="col-md-4">');
+        $thisCloned.removeClass();
+        $thisCloned.addClass('rate container-fluid no-padding');
+        $featuredWrapper.append($thisCloned);
+        $featuredWrapper.appendTo('#featured-rates');
+
+        var $carrier = $thisCloned.find('.carrier-name');
+        $carrier.removeClass('col-md-4');
+        $carrier.addClass('col-md-12');
+
+        var $serviceType = $thisCloned.find('.service-type');
+        $serviceType.removeClass('col-md-4');
+        $serviceType.addClass('col-md-12');
+
+        var $days = $thisCloned.find('.days');
+        $days.removeClass('col-md-2');
+        $days.addClass('col-md-6');
+
+        var $price = $thisCloned.find('.price');
+        $price.removeClass('col-md-2');
+        $price.addClass('col-md-6');
+    });
+
+    // render the fastest delivery
+    var $fastestDelivery = $('<div>');
+    $('#fastest-delivery').append($fastestDelivery);
+    $fastestDelivery.html(
+        '<div class="rate container-fluid">' +
+            '<div class="col-md-12 col-xs-12 carrier-name">' + fastestDelivery['carrier'] + '</div>' +
+            '<div class="col-md-12 col-xs-12 service-type">' + fastestDelivery['serviceType'] + '</div>' +
+            '<div class="col-md-6 col-xs-6 days">' + 
+                '<span class="glyphicon glyphicon-time" aria-hidden="true"></span>' + fastestDelivery['days'] + ' <span>days</span>' +
+            '</div>' +
+            '<div class="col-md-6 col-xs-6 price">' + 
+                '<button class="price-btn" type="button">' +
+                    '<span class="glyphicon glyphicon-usd" aria-hidden="true"></span>' + fastestDelivery['total'].toFixed(2) +
+                '</button>' +
+            '</div>' +
+        '</div>'
+    );
+
+    // toggle the hidden rates from a carrier on click
+    $('.show-hidden-rates').click(function() {
+        var $this = $(this);
+        var carrierCode = $this.attr('data-code');
+        var borderBottom = $this.css('border-bottom-width')[0];
+
+        if(parseInt(borderBottom) > 0) {
+            $this.css('border-bottom-width', '0');
+            $this.css('border-radius', '5px 5px 0 0');
+        } else {
+            $this.css('border-bottom-width', '2px');
+            $this.css('border-radius', '5px 5px 5px 5px');
+        }
+
+        $('.hidden-rate[data-code=' + carrierCode + ']').last().css('border-bottom', '2px solid silver');
+        $('.hidden-rate[data-code=' + carrierCode + ']').toggle();
+    });
+
+    // TODO refactor this shit
+    $('.hidden-rate').click(function() {
+        var carrierCode = $(this).attr('data-code');
+        var $this = $('.show-hidden-rates[data-code=' + carrierCode + ']');
+        var borderBottom = $this.css('border-bottom-width')[0];
+
+        if(parseInt(borderBottom) > 0) {
+            $this.css('border-bottom-width', '0');
+            $this.css('border-radius', '5px 5px 0 0');
+        } else {
+            $this.css('border-bottom-width', '2px');
+            $this.css('border-radius', '5px 5px 5px 5px');
+        }
+
+        $('.hidden-rate[data-code=' + carrierCode + ']').last().css('border-bottom', '2px solid silver');
+        $('.hidden-rate[data-code=' + carrierCode + ']').toggle();
+    });
+
+    // Click on price button
+    $('.price-btn').click(function(event){
+        event.stopPropagation();
+        
+        var typeOfQuote = $('#quote').attr('data-type');
+        var $this = $(this);
+        var rateId = $this.attr('data-rate-id');
+
+        rates[rateId]['selected'] = true;
+        dataObj['rates'] = rates;
+        dataObj['typeOfQuote'] = typeOfQuote;
+        saveQuote(JSON.stringify(dataObj));
+    });
+
+    // focus on the rates div
+    $('html, body').animate({ scrollTop: $('#rates').offset().top }, 'slow');
+
+    // remove the rates if the state of the form is changed
+    $('#quote').change(function() {
+        $('#rates').remove();
+        $('#rates-error').remove();
+    });
+}
+        </script>
+    </body>
+</html>
