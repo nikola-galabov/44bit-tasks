@@ -1,0 +1,43 @@
+html, body, div {
+	margin: 0;
+	padding: 0;
+	border: none;
+	font-family: "Arrial Narrow";
+	font-size: 9pt;
+}
+
+#label {
+	width: 4in;
+	height: 6.5in;
+}
+
+.label-row {
+	height: 0.8125in;
+	border-bottom: 1px solid black;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	padding: 10px;
+}
+
+.col-half {
+	width: 50%;
+	display: inline-block;
+    text-align: center;
+}
+
+.fromAddress {
+	text-align: left;
+}
+
+.toAddress {
+	text-align: right;
+}
+
+.barcode {
+	height: .4in;
+}
+
+.barcode img {
+	max-height: 100%;
+}
