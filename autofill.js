@@ -22,7 +22,7 @@ $('#autofill-company').change(function(){
 			var inputId = $(el).attr('id');
 			var inputValue = data[autofillValues[inputId]];
 			$(el).val(inputValue);
-			initialValues[inputId] = inputValue; 
+			initialValues[inputId] = inputValue;
 		});
 
 		$inputs.change(function(){
